@@ -1,5 +1,5 @@
 //
-//  HelloWorldLayer.h
+//  BackgroundLayer.h
 //  Evolution
 //
 //  Created by lev on 2/26/12.
@@ -8,7 +8,7 @@
 
 #import "cocos2d.h"
 
-@interface HelloWorldLayer : CCLayer
+@interface BackgroundLayer : CCLayer
 {
 }
 

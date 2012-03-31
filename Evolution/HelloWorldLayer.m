@@ -6,58 +6,85 @@
 //  Copyright __MyCompanyName__ 2012. All rights reserved.
 //
 
-
-// Import the interfaces
 #import "HelloWorldLayer.h"
 
-// HelloWorldLayer implementation
+@interface HelloWorldLayer ()
+ @property (nonatomic, retain) CCSprite *bacilla;
+ @property (nonatomic, retain) CCAction *moveAction;
+ -(void)loadAnimations;
+@end
+
 @implementation HelloWorldLayer
 
-+(CCScene *) scene
-{
-	// 'scene' is an autorelease object.
-	CCScene *scene = [CCScene node];
-	
-	// 'layer' is an autorelease object.
-	HelloWorldLayer *layer = [HelloWorldLayer node];
-	
-	// add layer as a child to scene
-	[scene addChild: layer];
-	
-	// return the scene
-	return scene;
-}
+@synthesize bacilla;
+@synthesize moveAction;
 
-// on "init" you need to initialize your instance
 -(id) init
 {
-	// always call "super" init
-	// Apple recommends to re-assign "self" with the "super" return value
-	if( (self=[super init])) {
-		
-		// create and initialize a Label
-		CCLabelTTF *label = [CCLabelTTF labelWithString:@"Hello World" fontName:@"Marker Felt" fontSize:64];
-
-		// ask director the the window size
-		CGSize size = [[CCDirector sharedDirector] winSize];
-	
-		// position the label on the center of the screen
-		label.position =  ccp( size.width /2 , size.height/2 );
-		
-		// add the label as a child to this Layer
-		[self addChild: label];
+	if((self = [super init])) 
+    {
+        [self loadAnimations];
+        self.isTouchEnabled = YES;
 	}
 	return self;
 }
 
-// on "dealloc" you need to release all your retained objects
+-(void)loadAnimations
+{
+    CGSize winSize = [[CCDirector sharedDirector] winSize];
+    
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"_ZZu.plist"];
+    CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"_ZZu.png"];
+    [self addChild:spriteSheet];
+    
+    NSMutableArray *bacillaMove = [NSMutableArray array];
+    for (int i = 0; i < 7; i++)
+    {
+        [bacillaMove addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:[NSString stringWithFormat:@"Phase%d_.png",i]]];
+    }
+    
+    CCAnimation *movingBacilla = [CCAnimation animationWithFrames:bacillaMove delay:0.1f];
+    
+    self.bacilla = [CCSprite spriteWithSpriteFrameName:@"Phase0_.png"];
+    bacilla.position = ccp(winSize.width/2, winSize.height/2);
+    self.moveAction = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:movingBacilla restoreOriginalFrame:NO]];
+    [bacilla runAction:moveAction];
+    [spriteSheet addChild:bacilla];
+}
+
+////////////////////////////////
+#pragma mark - Touches methods
+
+-(void) registerWithTouchDispatcher
+{
+	[[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
+}
+
+- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event
+{
+    return YES;
+}
+
+- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
+{
+    CGPoint location = [touch locationInView:[touch view]];
+    location = [[CCDirector sharedDirector] convertToGL:location];
+    
+    CGFloat dx = location.x - bacilla.position.x;
+    CGFloat dy = location.y - bacilla.position.y;
+    
+    CGFloat angle = atan2f(-dy, dx);
+    
+    [bacilla runAction:[CCSequence actions:[CCRotateTo actionWithDuration:0.1 angle:180*angle/M_PI],[CCMoveTo actionWithDuration:1 position:location], nil]];
+}
+
+////////////////////////////////
+
 - (void) dealloc
 {
-	// in case you have something to dealloc, do it in this method
-	// in this particular example nothing needs to be released.
-	// cocos2d will automatically release all the children (Label)
-	
-	// don't forget to call "super dealloc"
+	self.bacilla = nil;
+    self.moveAction = nil;
+    
 	[super dealloc];
 }
 @end
