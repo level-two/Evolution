@@ -9,12 +9,26 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Evolution/HelloWorldLayer.m"
-         timestampString = "353107397.283159"
+         timestampString = "355516386.340967"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "73"
-         endingLineNumber = "73"
-         landmarkName = "-ccTouchEnded:withEvent:"
+         startingLineNumber = "82"
+         endingLineNumber = "82"
+         landmarkName = "@implementation HelloWorldLayer"
+         landmarkType = "3">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Evolution/AnimationLoader.m"
+         timestampString = "355517731.840141"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "72"
+         endingLineNumber = "72"
+         landmarkName = "-loadAnimationsFromDir:recursive:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

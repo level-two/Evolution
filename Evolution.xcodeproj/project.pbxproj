@@ -7,15 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF97BE7D1530CF1700B0A6E4 /* AnimationLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = DF97BE7C1530CF1700B0A6E4 /* AnimationLoader.m */; };
+		DF97BE7F1530CFA800B0A6E4 /* Sprites in Resources */ = {isa = PBXBuildFile; fileRef = DF97BE7E1530CFA800B0A6E4 /* Sprites */; };
 		DF9D96B0151BC6E200134160 /* CreatureSpermik.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9D96AF151BC6E100134160 /* CreatureSpermik.m */; };
-		DF9D96B4151BC6F900134160 /* StarObject.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9D96B3151BC6F900134160 /* StarObject.m */; };
-		DF9D96B7151BC72F00134160 /* PointObject.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9D96B6151BC72F00134160 /* PointObject.m */; };
-		DF9D96BA151BC74200134160 /* FishCreature.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9D96B9151BC74200134160 /* FishCreature.m */; };
-		DF9D96BD151BC75000134160 /* BukaCreature.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9D96BC151BC75000134160 /* BukaCreature.m */; };
 		DFA750B8150BE213007206ED /* BackgroundLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA750B7150BE213007206ED /* BackgroundLayer.m */; };
 		DFA750BC150BE57E007206ED /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA750BB150BE57E007206ED /* GameScene.m */; };
-		DFA750BF150BEB56007206ED /* microspore-cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DFA750BD150BEB56007206ED /* microspore-cover.jpg */; };
-		DFA750C0150BEB56007206ED /* PollenTetrads.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DFA750BE150BEB56007206ED /* PollenTetrads.jpg */; };
 		DFE41CA314F996540036ACC7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA214F996540036ACC7 /* QuartzCore.framework */; };
 		DFE41CA514F996540036ACC7 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA414F996540036ACC7 /* OpenGLES.framework */; };
 		DFE41CA714F996540036ACC7 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA614F996540036ACC7 /* OpenAL.framework */; };
@@ -131,27 +127,18 @@
 		DFE41E0614F9965B0036ACC7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE41E0514F9965B0036ACC7 /* AppDelegate.m */; };
 		DFE41E0914F9965B0036ACC7 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE41E0814F9965B0036ACC7 /* RootViewController.m */; };
 		DFE41E0C14F9965B0036ACC7 /* HelloWorldLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE41E0B14F9965B0036ACC7 /* HelloWorldLayer.m */; };
-		DFEC5A5D1506AD2E0099F97A /* _ZZu.plist in Resources */ = {isa = PBXBuildFile; fileRef = DFEC5A5B1506AD2E0099F97A /* _ZZu.plist */; };
-		DFEC5A5E1506AD2E0099F97A /* _ZZu.png in Resources */ = {isa = PBXBuildFile; fileRef = DFEC5A5C1506AD2E0099F97A /* _ZZu.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DF97BE7B1530CF1700B0A6E4 /* AnimationLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationLoader.h; sourceTree = "<group>"; };
+		DF97BE7C1530CF1700B0A6E4 /* AnimationLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationLoader.m; sourceTree = "<group>"; };
+		DF97BE7E1530CFA800B0A6E4 /* Sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Sprites; path = Resources/Sprites; sourceTree = "<group>"; };
 		DF9D96AE151BC6E100134160 /* CreatureSpermik.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreatureSpermik.h; sourceTree = "<group>"; };
 		DF9D96AF151BC6E100134160 /* CreatureSpermik.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreatureSpermik.m; sourceTree = "<group>"; };
-		DF9D96B2151BC6F900134160 /* StarObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarObject.h; sourceTree = "<group>"; };
-		DF9D96B3151BC6F900134160 /* StarObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarObject.m; sourceTree = "<group>"; };
-		DF9D96B5151BC72F00134160 /* PointObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointObject.h; sourceTree = "<group>"; };
-		DF9D96B6151BC72F00134160 /* PointObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointObject.m; sourceTree = "<group>"; };
-		DF9D96B8151BC74200134160 /* FishCreature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FishCreature.h; sourceTree = "<group>"; };
-		DF9D96B9151BC74200134160 /* FishCreature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FishCreature.m; sourceTree = "<group>"; };
-		DF9D96BB151BC75000134160 /* BukaCreature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BukaCreature.h; sourceTree = "<group>"; };
-		DF9D96BC151BC75000134160 /* BukaCreature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BukaCreature.m; sourceTree = "<group>"; };
 		DFA750B6150BE213007206ED /* BackgroundLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundLayer.h; sourceTree = "<group>"; };
 		DFA750B7150BE213007206ED /* BackgroundLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundLayer.m; sourceTree = "<group>"; };
 		DFA750BA150BE57E007206ED /* GameScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
 		DFA750BB150BE57E007206ED /* GameScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
-		DFA750BD150BEB56007206ED /* microspore-cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "microspore-cover.jpg"; sourceTree = "<group>"; };
-		DFA750BE150BEB56007206ED /* PollenTetrads.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = PollenTetrads.jpg; sourceTree = "<group>"; };
 		DFE41C9E14F996540036ACC7 /* Evolution.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Evolution.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFE41CA214F996540036ACC7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DFE41CA414F996540036ACC7 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -387,8 +374,6 @@
 		DFE41E0A14F9965B0036ACC7 /* HelloWorldLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloWorldLayer.h; sourceTree = "<group>"; };
 		DFE41E0B14F9965B0036ACC7 /* HelloWorldLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloWorldLayer.m; sourceTree = "<group>"; };
 		DFE41E0D14F9965B0036ACC7 /* GameConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConfig.h; sourceTree = "<group>"; };
-		DFEC5A5B1506AD2E0099F97A /* _ZZu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = _ZZu.plist; sourceTree = "<group>"; };
-		DFEC5A5C1506AD2E0099F97A /* _ZZu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = _ZZu.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -410,18 +395,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		DF05FA2014FAB0CD002EE697 /* Sprites */ = {
-			isa = PBXGroup;
-			children = (
-				DFA750BD150BEB56007206ED /* microspore-cover.jpg */,
-				DFA750BE150BEB56007206ED /* PollenTetrads.jpg */,
-				DFEC5A5B1506AD2E0099F97A /* _ZZu.plist */,
-				DFEC5A5C1506AD2E0099F97A /* _ZZu.png */,
-			);
-			name = Sprites;
-			path = Resources/Sprites;
-			sourceTree = "<group>";
-		};
 		DFE41C9314F996530036ACC7 = {
 			isa = PBXGroup;
 			children = (
@@ -465,18 +438,12 @@
 				DFA750BB150BE57E007206ED /* GameScene.m */,
 				DFE41E0A14F9965B0036ACC7 /* HelloWorldLayer.h */,
 				DFE41E0B14F9965B0036ACC7 /* HelloWorldLayer.m */,
+				DF97BE7B1530CF1700B0A6E4 /* AnimationLoader.h */,
+				DF97BE7C1530CF1700B0A6E4 /* AnimationLoader.m */,
 				DFA750B6150BE213007206ED /* BackgroundLayer.h */,
 				DFA750B7150BE213007206ED /* BackgroundLayer.m */,
 				DF9D96AE151BC6E100134160 /* CreatureSpermik.h */,
 				DF9D96AF151BC6E100134160 /* CreatureSpermik.m */,
-				DF9D96B2151BC6F900134160 /* StarObject.h */,
-				DF9D96B3151BC6F900134160 /* StarObject.m */,
-				DF9D96B5151BC72F00134160 /* PointObject.h */,
-				DF9D96B6151BC72F00134160 /* PointObject.m */,
-				DF9D96B8151BC74200134160 /* FishCreature.h */,
-				DF9D96B9151BC74200134160 /* FishCreature.m */,
-				DF9D96BB151BC75000134160 /* BukaCreature.h */,
-				DF9D96BC151BC75000134160 /* BukaCreature.m */,
 				DFE41E0D14F9965B0036ACC7 /* GameConfig.h */,
 				DFE41CB314F996540036ACC7 /* Resources */,
 				DFE41CC714F996550036ACC7 /* libs */,
@@ -488,7 +455,7 @@
 		DFE41CB314F996540036ACC7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DF05FA2014FAB0CD002EE697 /* Sprites */,
+				DF97BE7E1530CFA800B0A6E4 /* Sprites */,
 				DFE41CB414F996540036ACC7 /* Default.png */,
 				DFE41CB614F996540036ACC7 /* fps_images.png */,
 				DFE41CB814F996540036ACC7 /* Icon-72.png */,
@@ -873,10 +840,7 @@
 				DFE41CC114F996540036ACC7 /* Icon.png in Resources */,
 				DFE41CC314F996550036ACC7 /* Icon@2x.png in Resources */,
 				DFE41CC614F996550036ACC7 /* iTunesArtwork in Resources */,
-				DFEC5A5D1506AD2E0099F97A /* _ZZu.plist in Resources */,
-				DFEC5A5E1506AD2E0099F97A /* _ZZu.png in Resources */,
-				DFA750BF150BEB56007206ED /* microspore-cover.jpg in Resources */,
-				DFA750C0150BEB56007206ED /* PollenTetrads.jpg in Resources */,
+				DF97BE7F1530CFA800B0A6E4 /* Sprites in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -988,10 +952,7 @@
 				DFA750B8150BE213007206ED /* BackgroundLayer.m in Sources */,
 				DFA750BC150BE57E007206ED /* GameScene.m in Sources */,
 				DF9D96B0151BC6E200134160 /* CreatureSpermik.m in Sources */,
-				DF9D96B4151BC6F900134160 /* StarObject.m in Sources */,
-				DF9D96B7151BC72F00134160 /* PointObject.m in Sources */,
-				DF9D96BA151BC74200134160 /* FishCreature.m in Sources */,
-				DF9D96BD151BC75000134160 /* BukaCreature.m in Sources */,
+				DF97BE7D1530CF1700B0A6E4 /* AnimationLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1046,6 +1007,7 @@
 				INFOPLIST_FILE = Evolution/Resources/Info.plist;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1061,6 +1023,7 @@
 				INFOPLIST_FILE = Evolution/Resources/Info.plist;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
