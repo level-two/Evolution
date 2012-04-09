@@ -4,7 +4,7 @@
 <dict>
 	<key>frames</key>
 	<dict>
-		<key>Phase4_.png</key>
+		<key>Bacilla_4.png</key>
 		<dict>
 			<key>aliases</key>
 			<array/>
@@ -23,7 +23,7 @@
 			<key>textureRotated</key>
 			<false/>
 		</dict>
-		<key>Phase1_.png</key>
+		<key>Bacilla_1.png</key>
 		<dict>
 			<key>aliases</key>
 			<array/>
@@ -42,7 +42,7 @@
 			<key>textureRotated</key>
 			<false/>
 		</dict>
-		<key>Phase0_.png</key>
+		<key>Bacilla_0.png</key>
 		<dict>
 			<key>aliases</key>
 			<array/>
@@ -61,7 +61,7 @@
 			<key>textureRotated</key>
 			<false/>
 		</dict>
-		<key>Phase3_.png</key>
+		<key>Bacilla_3.png</key>
 		<dict>
 			<key>aliases</key>
 			<array/>
@@ -80,7 +80,7 @@
 			<key>textureRotated</key>
 			<false/>
 		</dict>
-		<key>Phase5_.png</key>
+		<key>Bacilla_5.png</key>
 		<dict>
 			<key>aliases</key>
 			<array/>
@@ -99,7 +99,7 @@
 			<key>textureRotated</key>
 			<false/>
 		</dict>
-		<key>Phase6_.png</key>
+		<key>Bacilla_6.png</key>
 		<dict>
 			<key>aliases</key>
 			<array/>
@@ -118,7 +118,7 @@
 			<key>textureRotated</key>
 			<false/>
 		</dict>
-		<key>Phase7_.png</key>
+		<key>Bacilla_7.png</key>
 		<dict>
 			<key>aliases</key>
 			<array/>
@@ -137,7 +137,7 @@
 			<key>textureRotated</key>
 			<false/>
 		</dict>
-		<key>Phase2_.png</key>
+		<key>Bacilla_2.png</key>
 		<dict>
 			<key>aliases</key>
 			<array/>
@@ -187,15 +187,10 @@
 	</dict>
 	<key>AnimationInfo</key>
 	<dict>
-		<key>FrameName</key>
+		<key>Bacilla</key>
 		<dict>
 			<key>FrameCount</key>
-			<integer>5</integer>
-		</dict>
-		<key>FrameName_2</key>
-		<dict>
-			<key>FrameCount</key>
-			<integer>7</integer>
+			<integer>8</integer>
 		</dict>
 	</dict>
 </dict>

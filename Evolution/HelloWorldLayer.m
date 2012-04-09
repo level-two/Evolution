@@ -11,7 +11,7 @@
 
 @interface HelloWorldLayer ()
  @property (nonatomic, retain) CCSprite *bacilla;
- @property (nonatomic, retain) CCAction *moveAction;
+// @property (nonatomic, retain) CCAction *moveAction;
 
  @property (nonatomic, retain) NSMutableArray *bugafishes;
  @property (nonatomic, retain) NSMutableArray *stars;
@@ -21,17 +21,21 @@
  @property (nonatomic, assign) NSInteger maxFishes;
  @property (nonatomic, assign) NSInteger maxStars;
  @property (nonatomic, assign) NSInteger maxPills;
+
+ @property (nonatomic, assign) CGSize winSize;
  -(void)loadAnimations;
+- (void)setup;
 @end
 
 @implementation HelloWorldLayer
 
 @synthesize bacilla;
-@synthesize moveAction;
+//@synthesize moveAction;
 @synthesize bugafishes, stars;
 @synthesize redPills, greenPills;
 
 @synthesize maxFishes, maxStars, maxPills;
+@synthesize winSize;
 //--------------------------------------------------------------
 
 -(id) init
@@ -39,8 +43,6 @@
 	if((self = [super init])) 
     {
         [self setup];
-        
-        [[AnimationLoader sharedInstance] loadAnimationsFromDir:@"Sprites/" recursive:YES];
 	}
 	return self;
 }
@@ -48,34 +50,15 @@
 - (void)setup
 {
     self.isTouchEnabled = YES;
-    [self loadAnimations];
+    self.winSize = [[CCDirector sharedDirector] winSize];
+    [[AnimationLoader sharedInstance] loadAnimationsFromDir:@"Sprites/" recursive:YES];
+    
+    [self initBacilla];
+    
     [self schedule:@selector(update:) interval:1.0];
     maxFishes = 5; // this constants should be recalculated later
     maxStars = 3;  // depending on LEVEL or SCORE
     maxPills = 6;
-}
-
--(void)loadAnimations
-{
-    CGSize winSize = [[CCDirector sharedDirector] winSize];
-    
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"_ZZu.plist"];
-    CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"_ZZu.png"];
-    [self addChild:spriteSheet];
-    
-    NSMutableArray *bacillaMove = [NSMutableArray array];
-    for (int i = 0; i < 7; i++)
-    {
-        [bacillaMove addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:[NSString stringWithFormat:@"Phase%d_.png",i]]];
-    }
-    
-    CCAnimation *movingBacilla = [CCAnimation animationWithFrames:bacillaMove delay:0.1f];
-    
-    self.bacilla = [CCSprite spriteWithSpriteFrameName:@"Phase0_.png"];
-    bacilla.position = ccp(winSize.width/2, winSize.height/2);
-    self.moveAction = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:movingBacilla restoreOriginalFrame:NO]];
-    [bacilla runAction:moveAction];
-    [spriteSheet addChild:bacilla];
 }
 
 //--------------------------------------------------------------
@@ -116,27 +99,47 @@
 //--------------------------------------------------------------
 
 
+- (void)initBacilla
+{
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"_ZZu"];
+    if (bn) 
+        [self addChild:bn];
+    self.bacilla = [[AnimationLoader sharedInstance] spriteWithName:@"Bacilla"];
+    CCAnimation *bacillaAnim = [[AnimationLoader sharedInstance] animationWithName:@"Bacilla"];
+    CCAction *moveAction = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:bacillaAnim restoreOriginalFrame:NO]];
+    [bacilla runAction:moveAction];
+    [bn addChild:bacilla];
+    
+    bacilla.position = ccp(winSize.width/2, winSize.height/2);
+}
+
 - (void)initBugafish
 {
     CGSize winSize = [[CCDirector sharedDirector] winSize];
     
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"Bugafish.plist"];
-    CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"Bugafish.png"];
-    [self addChild:spriteSheet];
+//    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"Bugafish.plist"];
+//    CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"Bugafish.png"];
+//    [self addChild:spriteSheet];
+//    
+//    NSMutableArray *bugaFrames = [NSMutableArray array];
+//    for (int i = 0; i < 7; i++)
+//    {
+//        [bugaFrames addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:[NSString stringWithFormat:@"Buga_%d.png",i]]];
+//    }
+//    
+//    CCAnimation *bugaAnim = [CCAnimation animationWithFrames:bugaFrames delay:0.1f];
     
-    NSMutableArray *bugaFrames = [NSMutableArray array];
-    for (int i = 0; i < 7; i++)
-    {
-        [bugaFrames addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:[NSString stringWithFormat:@"Buga_%d.png",i]]];
-    }
     
-    CCAnimation *bugaAnim = [CCAnimation animationWithFrames:bugaFrames delay:0.1f];
     
-    self.bacilla = [CCSprite spriteWithSpriteFrameName:@"Phase0_.png"];
-    bacilla.position = ccp(winSize.width/2, winSize.height/2);
-    self.moveAction = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:bugaAnim restoreOriginalFrame:NO]];
-    [bacilla runAction:moveAction];
-    [spriteSheet addChild:bacilla];
+//    self.bacilla = [CCSprite spriteWithSpriteFrameName:@"Phase0_.png"];
+//    bacilla.position = ccp(winSize.width/2, winSize.height/2);
+//    self.moveAction = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:bugaAnim restoreOriginalFrame:NO]];
+//    [bacilla runAction:moveAction];
+//    [spriteSheet addChild:bacilla];
+    
+    
+    
+    
 }
 
 - (void)initStar
@@ -265,7 +268,7 @@
 - (void) dealloc
 {
 	self.bacilla = nil;
-    self.moveAction = nil;
+//    self.moveAction = nil;
     self.bugafishes = nil;
     self.stars = nil;
     self.redPills = nil;
