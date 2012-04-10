@@ -22,8 +22,8 @@
 //    CCLayerColor *cclc = [CCLayerColor layerWithColor:ccc4(10, 10, 50, 255)];
 //    [scene addChild:cclc];
     
-    BackgroundLayer *bg = [BackgroundLayer node];
-    [scene addChild:bg];
+//    BackgroundLayer *bg = [BackgroundLayer node];
+//    [scene addChild:bg];
     
 	HelloWorldLayer *layer = [HelloWorldLayer node];
 	[scene addChild: layer];

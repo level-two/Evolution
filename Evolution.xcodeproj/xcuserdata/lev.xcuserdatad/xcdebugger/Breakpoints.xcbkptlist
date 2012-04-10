@@ -9,25 +9,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Evolution/HelloWorldLayer.m"
-         timestampString = "355687985.416663"
+         timestampString = "355788196.005835"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "65"
-         endingLineNumber = "65"
-         landmarkName = "@implementation HelloWorldLayer"
-         landmarkType = "3">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "Evolution/HelloWorldLayer.m"
-         timestampString = "355688256.578097"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "105"
-         endingLineNumber = "105"
+         startingLineNumber = "77"
+         endingLineNumber = "77"
          landmarkName = "-initBacilla"
          landmarkType = "5">
       </FileBreakpoint>
