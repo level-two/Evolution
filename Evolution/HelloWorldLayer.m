@@ -25,6 +25,8 @@
  @property (nonatomic, assign) NSInteger maxPills;
 
  @property (nonatomic, assign) CGSize winSize, worldSize;
+ @property (nonatomic, retain) NSDate *prevTapTime;
+
  -(void)loadAnimations;
 - (void)setup;
 @end
@@ -39,6 +41,8 @@
 
 @synthesize maxFishes, maxStars, maxPills;
 @synthesize winSize, worldSize;
+
+@synthesize prevTapTime;
 //--------------------------------------------------------------
 
 -(id) init
@@ -63,6 +67,8 @@
     [self addBackground];
     [self addBacilla];
     
+    self.prevTapTime = [NSDate date];
+    
     [self schedule:@selector(update:) interval:1.0];
     maxFishes = 5; // this constants should be recalculated later
     maxStars = 3;  // depending on LEVEL or SCORE
@@ -73,18 +79,18 @@
 
 - (void)initBacilla
 {
-    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"_ZZu"];
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bacilla"];
     if (bn)
         [self addChild:bn z:1];
-    self.bacilla = [[AnimationLoader sharedInstance] spriteWithName:@"Bacilla"];
-    CCAnimation *bacillaAnim = [[AnimationLoader sharedInstance] animationWithName:@"Bacilla"];
+    self.bacilla = [[AnimationLoader sharedInstance] spriteWithName:@"anim"];
+    CCAnimation *bacillaAnim = [[AnimationLoader sharedInstance] animationWithName:@"anim"];
     CCAction *moveAction = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:bacillaAnim restoreOriginalFrame:NO]];
     [bacilla runAction:moveAction];
 }
 
 - (void)initBackground
 {
-    self.background = [CCSprite spriteWithFile:@"Sprites/PollenTetrads.jpg"];}
+    self.background = [CCSprite spriteWithFile:@"Sprites/ocean.png"];}
 
 - (void)initBugafish
 {
@@ -121,7 +127,7 @@
 
 - (void)addBacilla
 {
-    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"_ZZu"];
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bacilla"];
     [bn addChild:bacilla];
     bacilla.position = ccp(winSize.width/2, winSize.height/2);
 }
@@ -229,11 +235,14 @@
     
     CGFloat angle = atan2f(-dy, dx);
     
-//    [bacilla runAction:[CCSequence actions:[CCRotateTo actionWithDuration:0.1 angle:180*angle/M_PI], nil]];
+    NSTimeInterval ti = -[prevTapTime timeIntervalSinceNow];
+    CGFloat moveDuration = ti > 0.2 ? 1.5 : 0.75; // if tap period is small - move hero with double speed
+    self.prevTapTime = [NSDate date];
+    
     [bacilla runAction:[CCRotateTo actionWithDuration:0.1 angle:180*angle/M_PI]];
-    [background runAction:[CCSequence actions:[CCActionInterval actionWithDuration:0.1], 
-                           [CCMoveBy actionWithDuration:1 position:ccp(-dx,-dy)], 
-                           nil]];
+    [background stopAllActions];
+    [background runAction:[CCEaseSineOut actionWithAction:
+                           [CCMoveBy actionWithDuration:moveDuration position:ccp(-dx,-dy)]]];
     
 }
 
@@ -268,6 +277,7 @@
 
 - (void) dealloc
 {
+    [[CCSpriteFrameCache sharedSpriteFrameCache] removeUnusedSpriteFrames];
 	self.bacilla = nil;
 //    self.moveAction = nil;
     self.background = nil;
@@ -276,6 +286,8 @@
     self.stars = nil;
     self.redPills = nil;
     self.greenPills = nil;
+    
+    self.prevTapTime = nil;
     
 	[super dealloc];
 }
