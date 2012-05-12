@@ -13,7 +13,8 @@
  @property (nonatomic, retain) CCSprite *bacilla;
  @property (nonatomic, retain) CCSprite *background;
 
-// @property (nonatomic, retain) CCAction *moveAction;
+ @property (nonatomic, retain) CCAnimate *bacillaMoveAction;
+ @property (nonatomic, retain) CCAnimation *bacillaAnimation;
 
  @property (nonatomic, retain) NSMutableArray *bugafishes;
  @property (nonatomic, retain) NSMutableArray *stars;
@@ -35,7 +36,10 @@
 
 @synthesize bacilla;
 @synthesize background;
-//@synthesize moveAction;
+
+@synthesize bacillaMoveAction;
+@synthesize bacillaAnimation;
+
 @synthesize bugafishes, stars;
 @synthesize redPills, greenPills;
 
@@ -83,14 +87,15 @@
     if (bn)
         [self addChild:bn z:1];
     self.bacilla = [[AnimationLoader sharedInstance] spriteWithName:@"anim"];
-    CCAnimation *bacillaAnim = [[AnimationLoader sharedInstance] animationWithName:@"anim"];
-    CCAction *moveAction = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:bacillaAnim restoreOriginalFrame:NO]];
-    [bacilla runAction:moveAction];
+    self.bacillaAnimation = [[AnimationLoader sharedInstance] animationWithName:@"anim"];
+    self.bacillaMoveAction = [CCAnimate actionWithAnimation:bacillaAnimation restoreOriginalFrame:NO];
+    [bacilla runAction:[CCRepeatForever actionWithAction:bacillaMoveAction]];
 }
 
 - (void)initBackground
 {
-    self.background = [CCSprite spriteWithFile:@"Sprites/ocean.png"];}
+    self.background = [CCSprite spriteWithFile:@"Sprites/ocean.png"];
+}
 
 - (void)initBugafish
 {
@@ -122,14 +127,20 @@
 - (void)addBackground
 {
     [self addChild:background z:0];
-    background.position = ccp( winSize.width/2, winSize.height/2);
+    CGFloat w = background.textureRect.size.width;
+    CGFloat h = background.textureRect.size.height;
+    background.position = ccp(w/2, h/2);
+    
+	[self runAction:[CCFollow actionWithTarget:bacilla worldBoundary:CGRectMake(0,0,w,h)]];
 }
 
 - (void)addBacilla
 {
+    CGFloat w = background.textureRect.size.width/2;
+    CGFloat h = background.textureRect.size.height/2;
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bacilla"];
     [bn addChild:bacilla];
-    bacilla.position = ccp(winSize.width/2, winSize.height/2);
+    bacilla.position = ccp(w,h);
 }
 
 - (void)addBugafish
@@ -230,22 +241,29 @@
     CGPoint location = [touch locationInView:[touch view]];
     location = [[CCDirector sharedDirector] convertToGL:location];
     
-    CGFloat dx = location.x - winSize.width/2;
-    CGFloat dy = location.y - winSize.height/2;
+    CGFloat bScrX = bacilla.position.x + self.position.x;
+    CGFloat bScrY = bacilla.position.y + self.position.y;
+    
+    CGFloat dx = location.x - bScrX;
+    CGFloat dy = location.y - bScrY;
     
     CGFloat angle = atan2f(-dy, dx);
     
     NSTimeInterval ti = -[prevTapTime timeIntervalSinceNow];
     CGFloat moveDuration = ti > 0.2 ? 1.5 : 0.75; // if tap period is small - move hero with double speed
+    bacillaAnimation.delay = ti > 0.2 ? 0.1 : 0.08;
     self.prevTapTime = [NSDate date];
     
+    [bacilla stopActionByTag:100500];
     [bacilla runAction:[CCRotateTo actionWithDuration:0.1 angle:180*angle/M_PI]];
-    [background stopAllActions];
-    [background runAction:[CCEaseSineOut actionWithAction:
-                           [CCMoveBy actionWithDuration:moveDuration position:ccp(-dx,-dy)]]];
     
+    CCAction *moveAction = [CCSequence actions: [CCEaseSineOut actionWithAction:
+                                                 [CCMoveBy actionWithDuration:moveDuration position:ccp(dx,dy)]],
+                            [CCCallBlock actionWithBlock:^(void){ bacillaAnimation.delay = 0.2; }],
+                            nil];
+    moveAction.tag = 100500;
+    [bacilla runAction:moveAction];
 }
-
 
 //--------------------------------------------------------------
 
@@ -279,7 +297,8 @@
 {
     [[CCSpriteFrameCache sharedSpriteFrameCache] removeUnusedSpriteFrames];
 	self.bacilla = nil;
-//    self.moveAction = nil;
+    self.bacillaAnimation =nil;
+    self.bacillaMoveAction = nil;
     self.background = nil;
     
     self.bugafishes = nil;
