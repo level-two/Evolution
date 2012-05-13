@@ -15,8 +15,11 @@
  @property (nonatomic, retain) CCSprite *bacilla;
  @property (nonatomic, retain) CCSprite *background;
 
- @property (nonatomic, retain) CCAnimate *bacillaMoveAction;
  @property (nonatomic, retain) CCAnimation *bacillaAnimation;
+ @property (nonatomic, retain) CCAnimate *bacillaMoveAction;
+
+ @property (nonatomic, retain) CCAnimation *bugafishAnimation;
+ @property (nonatomic, retain) CCAnimate *bugafishMoveAction;
 
  @property (nonatomic, retain) NSMutableArray *bugafishes;
  @property (nonatomic, retain) NSMutableArray *stars;
@@ -28,6 +31,7 @@
  @property (nonatomic, assign) NSInteger maxPills;
 
  @property (nonatomic, assign) CGSize winSize, worldSize;
+ @property (nonatomic, assign) CGRect worldBounds;
  @property (nonatomic, retain) NSDate *prevTapTime;
 
  -(void)loadAnimations;
@@ -42,11 +46,15 @@
  @synthesize bacillaMoveAction;
  @synthesize bacillaAnimation;
 
+ @synthesize bugafishAnimation;
+ @synthesize bugafishMoveAction;
+
  @synthesize bugafishes, stars;
  @synthesize redPills, greenPills;
 
  @synthesize maxFishes, maxStars, maxPills;
  @synthesize winSize, worldSize;
+ @synthesize worldBounds;
 
  @synthesize prevTapTime;
 
@@ -69,10 +77,15 @@
     
     [self initBackground];    
     [self initBacilla];
+    [self initBugafish];
+    
     self.winSize = [[CCDirector sharedDirector] winSize];
     self.worldSize = background.textureRect.size; // will be changed in future
+    self.worldBounds = CGRectMake(0, 0, worldSize.width, worldSize.height);
+    
     [self addBackground];
     [self addBacilla];
+    [self addBugafish];
     
     self.prevTapTime = [NSDate date];
     
@@ -102,7 +115,13 @@
 
 - (void)initBugafish
 {
+    self.bugafishes = [NSMutableArray array];
     
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bugafish"];
+    if (bn)
+        [self addChild:bn z:1];
+    self.bugafishAnimation = [[AnimationLoader sharedInstance] animationWithName:@"Bugafish_move"];
+    self.bugafishMoveAction = [CCAnimate actionWithAnimation:bugafishAnimation restoreOriginalFrame:NO];
 }
 
 - (void)initStar
@@ -130,8 +149,8 @@
 - (void)addBackground
 {
     [self addChild:background z:0];
-    CGFloat w = background.textureRect.size.width;
-    CGFloat h = background.textureRect.size.height;
+    CGFloat w = worldSize.width;
+    CGFloat h = worldSize.height;
     background.position = ccp(w/2, h/2);
     
 	[self runAction:[CCFollow actionWithTarget:bacilla worldBoundary:CGRectMake(0,0,w,h)]];
@@ -139,16 +158,28 @@
 
 - (void)addBacilla
 {
-    CGFloat w = background.textureRect.size.width/2;
-    CGFloat h = background.textureRect.size.height/2;
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bacilla"];
     [bn addChild:bacilla];
+    
+    CGFloat w = worldSize.width/2;
+    CGFloat h = worldSize.height/2;
     bacilla.position = ccp(w,h);
 }
 
 - (void)addBugafish
 {
+    CCSprite *bugafish = [[AnimationLoader sharedInstance] spriteWithName:@"Bugafish_move"];
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bugafish"];
+    [bn addChild:bugafish];
     
+    CGFloat w = worldSize.width/2;
+    CGFloat h = worldSize.height/2;
+    bugafish.position = ccp(w,h);
+    
+    [bugafish runAction:[CCRepeatForever actionWithAction:bugafishMoveAction]];
+    
+    [bugafishes addObject:bugafish];
+    [self bugafishUpdate:bugafish];
 }
 
 - (void)addStar
@@ -200,9 +231,36 @@
 
 //--------------------------------------------------------------
 
-- (void)bugafishUpdate
+- (void)bugafishUpdate:(CCSprite*)bugafish
 {
     
+    CGFloat dx          = -200 + random()%400;
+    CGFloat dy          = -30 + random()%60;
+    CGFloat moveTime    = 1.0;
+    CGFloat delayTime   = 0.8 + random()%2;
+    
+    CCActionInterval *move = [CCMoveBy      actionWithDuration:moveTime position:ccp(dx,dy)];
+    CCAction *easedMove    = [CCEaseSineOut actionWithAction:move];
+    CCAction *delay        = [CCDelayTime   actionWithDuration:delayTime];
+    
+    CGFloat sgnX = dx<0 ? -1 : 1;
+    bugafish.scaleX = sgnX;
+    
+    NSMutableArray *acitons = [NSMutableArray arrayWithObjects:easedMove, delay, nil];
+    
+    CGPoint endPos = ccp(bugafish.position.x + dx, bugafish.position.y + dy);
+    if(CGRectContainsPoint(worldBounds, endPos))
+    {
+        CCAction *updateCall = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishUpdate:)];
+        [acitons addObject:updateCall];
+    }
+    else
+    {
+        CCAction *removeCall = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishRemove:)];
+        [acitons addObject:removeCall];
+    }
+    CCAction *sequence = [CCSequence actionsWithArray:acitons];
+    [bugafish runAction:sequence];
 }
 
 - (void)starUpdate
@@ -223,6 +281,14 @@
 - (void)bukaUpdate
 {
     
+}
+
+//--------------------------------------------------------------
+
+- (void)bugafishRemove:(CCSprite*)bugafish
+{
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bugafish"];
+    [bn removeChild:bugafish cleanup:YES];
 }
 
 //--------------------------------------------------------------
@@ -322,6 +388,9 @@
     self.bacillaAnimation =nil;
     self.bacillaMoveAction = nil;
     self.background = nil;
+    
+    self.bugafishAnimation = nil;
+    self.bugafishMoveAction = nil;
     
     self.bugafishes = nil;
     self.stars = nil;

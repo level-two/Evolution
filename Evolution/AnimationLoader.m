@@ -141,6 +141,8 @@
     
     [spriteBathcNodes setObject:spriteSheet forKey:spriteName];
     
+    NSLog(@"File %@ loaded", [plistFile lastPathComponent]);
+    
     return YES;
 }
 
