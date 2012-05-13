@@ -9,6 +9,8 @@
 #import "HelloWorldLayer.h"
 #import "AnimationLoader.h"
 
+#define moveActionTag 100500
+
 @interface HelloWorldLayer ()
  @property (nonatomic, retain) CCSprite *bacilla;
  @property (nonatomic, retain) CCSprite *background;
@@ -34,19 +36,20 @@
 
 @implementation HelloWorldLayer
 
-@synthesize bacilla;
-@synthesize background;
+ @synthesize bacilla;
+ @synthesize background;
 
-@synthesize bacillaMoveAction;
-@synthesize bacillaAnimation;
+ @synthesize bacillaMoveAction;
+ @synthesize bacillaAnimation;
 
-@synthesize bugafishes, stars;
-@synthesize redPills, greenPills;
+ @synthesize bugafishes, stars;
+ @synthesize redPills, greenPills;
 
-@synthesize maxFishes, maxStars, maxPills;
-@synthesize winSize, worldSize;
+ @synthesize maxFishes, maxStars, maxPills;
+ @synthesize winSize, worldSize;
 
-@synthesize prevTapTime;
+ @synthesize prevTapTime;
+
 //--------------------------------------------------------------
 
 -(id) init
@@ -247,21 +250,40 @@
     CGFloat dx = location.x - bScrX;
     CGFloat dy = location.y - bScrY;
     
-    CGFloat angle = atan2f(-dy, dx);
+    CGFloat sgnX = dx<0 ? -1 : 1;
+    CGFloat angle = atan2f( -dy*sgnX, fabs(dx)) *180/M_PI;
     
+    // TODO: start horizontal rotation animation here
+    if (sgnX == bacilla.scaleX) 
+        [bacilla runAction:[CCRotateTo actionWithDuration:0.1 angle:angle]];
+    else
+        bacilla.rotation = angle; // if direction changed - do not rotate
+    
+    bacilla.scaleX = sgnX; // change direction if needed
+    
+    
+    CGFloat moveDuration;
     NSTimeInterval ti = -[prevTapTime timeIntervalSinceNow];
-    CGFloat moveDuration = ti > 0.2 ? 1.5 : 0.75; // if tap period is small - move hero with double speed
-    bacillaAnimation.delay = ti > 0.2 ? 0.1 : 0.08;
+    if (ti > 0.2)
+    {
+        moveDuration = 1.5;
+        bacillaAnimation.delay = 0.1;
+    }
+    else
+    {
+        // if tap period is small - move hero with double speed
+        moveDuration = 0.75;
+        bacillaAnimation.delay = 0.08;
+    }
     self.prevTapTime = [NSDate date];
     
-    [bacilla stopActionByTag:100500];
-    [bacilla runAction:[CCRotateTo actionWithDuration:0.1 angle:180*angle/M_PI]];
     
+    [bacilla stopActionByTag:moveActionTag];
     CCAction *moveAction = [CCSequence actions: [CCEaseSineOut actionWithAction:
                                                  [CCMoveBy actionWithDuration:moveDuration position:ccp(dx,dy)]],
                             [CCCallBlock actionWithBlock:^(void){ bacillaAnimation.delay = 0.2; }],
                             nil];
-    moveAction.tag = 100500;
+    moveAction.tag = moveActionTag;
     [bacilla runAction:moveAction];
 }
 
