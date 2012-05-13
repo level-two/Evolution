@@ -30,6 +30,8 @@
  @property (nonatomic, assign) NSInteger maxStars;
  @property (nonatomic, assign) NSInteger maxPills;
 
+ @property (nonatomic, assign) BOOL bacDoublespeeded;
+
  @property (nonatomic, assign) CGSize winSize, worldSize;
  @property (nonatomic, assign) CGRect worldBounds;
  @property (nonatomic, retain) NSDate *prevTapTime;
@@ -51,6 +53,8 @@
 
  @synthesize bugafishes, stars;
  @synthesize redPills, greenPills;
+
+ @synthesize bacDoublespeeded;
 
  @synthesize maxFishes, maxStars, maxPills;
  @synthesize winSize, worldSize;
@@ -89,10 +93,11 @@
     
     self.prevTapTime = [NSDate date];
     
-    [self schedule:@selector(update:) interval:1.0];
     maxFishes = 5; // this constants should be recalculated later
     maxStars = 3;  // depending on LEVEL or SCORE
     maxPills = 6;
+    
+    [self scheduleUpdate];
 }
 
 //--------------------------------------------------------------
@@ -301,20 +306,35 @@
 
 //--------------------------------------------------------------
 
-- (void)bugafishRemove:(CCSprite*)bugafish
+- (void)bugafishRemove:(CCSprite*)buga
 {
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bugafish"];
-    [bn removeChild:bugafish cleanup:YES];
+    [bn removeChild:buga cleanup:YES];
 }
 
-//--------------------------------------------------------------
-
-- (BOOL)isHeroCanBeSeenBy:(CCSprite*)evilCreature
+- (void)dashBuga:(CCSprite*)buga
 {
-    // check direction towards hero and rotation of the creature
-    return (bacilla.position.x - evilCreature.position.x)*evilCreature.scaleX > 0;
+    [buga stopAllActions];
+    
+    CGFloat angle = bacilla.rotation;
+    if (bacilla.scaleX < 0) angle = 180 - angle;
+    angle *= M_PI/180; // radians
+    
+    CGFloat moveDist = 200;
+    CGFloat dx = moveDist*cos(angle);
+    CGFloat dy = moveDist*sin(angle);
+    
+    id rotation         = [CCRotateBy actionWithDuration:0.5 angle:360];
+    id repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
+    id easedRepRotation = [CCEaseOut actionWithAction:repeatedRotation];
+    id move             = [CCMoveBy actionWithDuration:2 position:ccp(dx,dy)];
+    id spawnedActions   = [CCSpawn actions:easedRepRotation, move, nil];
+    
+    id callUpdate       = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishUpdate:)];
+    id allActions       = [CCSequence actions:spawnedActions, callUpdate, nil];
+    
+    [buga runAction:allActions];
 }
-
 
 //--------------------------------------------------------------
 
@@ -359,12 +379,14 @@
     {
         moveDuration = 1.5;
         bacillaAnimation.delay = 0.1;
+        bacDoublespeeded = NO;
     }
     else
     {
         // if tap period is small - move hero with double speed
         moveDuration = 0.75;
         bacillaAnimation.delay = 0.08;
+        bacDoublespeeded = YES;
     }
     self.prevTapTime = [NSDate date];
     
@@ -372,7 +394,11 @@
     [bacilla stopActionByTag:moveActionTag];
     CCAction *moveAction = [CCSequence actions: [CCEaseSineOut actionWithAction:
                                                  [CCMoveBy actionWithDuration:moveDuration position:ccp(dx,dy)]],
-                            [CCCallBlock actionWithBlock:^(void){ bacillaAnimation.delay = 0.2; }],
+                            [CCCallBlock actionWithBlock:^(void)
+                             { 
+                                 bacillaAnimation.delay = 0.2;
+                                 bacDoublespeeded = NO;
+                             }],
                             nil];
     moveAction.tag = moveActionTag;
     [bacilla runAction:moveAction];
@@ -382,10 +408,35 @@
 
 - (void)update:(ccTime)dt
 {
-    
+    CGRect bacRect = CGRectMake(bacilla.position.x - bacilla.contentSize.width/2,
+                                bacilla.position.y - bacilla.contentSize.height/2,
+                                bacilla.contentSize.width,
+                                bacilla.contentSize.height);
+    for (CCSprite* buga in bugafishes)
+    {
+        if ([self collisionDetection:buga withRect:bacRect])
+        {
+            if ([self isHeroCanBeSeenBy:buga])
+            {
+//                [self gamover];
+            }
+            else if (bacDoublespeeded)
+            {
+                [self dashBuga:buga];
+            }
+            
+            [bacilla stopActionByTag:moveActionTag];
+        }
+    }
 }
 
 //--------------------------------------------------------------
+
+- (BOOL)isHeroCanBeSeenBy:(CCSprite*)evilCreature
+{
+    // check direction towards hero and rotation of the creature
+    return (bacilla.position.x - evilCreature.position.x)*evilCreature.scaleX > 0;
+}
 
 - (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2
 {
@@ -404,6 +455,25 @@
                                s2.contentSize.width,
                                s2.contentSize.height);
     return CGRectIntersectsRect(cachedrect, s2rect);
+}
+
+- (BOOL)collisionDetection:(CCSprite*)s1 withRect:(CGRect)rect2
+{
+//    static CCSprite *cachedsprite = nil;
+//    static CGRect cachedrect = {0,0,0,0};
+//    if (cachedsprite!=s1)
+//    {
+//        cachedsprite = s1;
+      CGRect rect1 = CGRectMake(s1.position.x - s1.contentSize.width/2,
+                                s1.position.y - s1.contentSize.height/2,
+                                s1.contentSize.width,
+                                s1.contentSize.height);
+//    }
+//    CGRect s2rect = CGRectMake(s2.position.x - s2.contentSize.width/2,
+//                               s2.position.y - s2.contentSize.height/2,
+//                               s2.contentSize.width,
+//                               s2.contentSize.height);
+    return CGRectIntersectsRect(rect1, rect2);
 }
 
 - (void) dealloc
