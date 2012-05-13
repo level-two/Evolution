@@ -233,34 +233,50 @@
 
 - (void)bugafishUpdate:(CCSprite*)bugafish
 {
+    CGPoint bacPos = bacilla.position;
+    CGPoint bugaPos = bugafish.position;
     
-    CGFloat dx          = -200 + random()%400;
-    CGFloat dy          = -30 + random()%60;
-    CGFloat moveTime    = 1.0;
-    CGFloat delayTime   = 0.8 + random()%2;
+    CGFloat dx;
+    CGFloat dy;
     
-    CCActionInterval *move = [CCMoveBy      actionWithDuration:moveTime position:ccp(dx,dy)];
-    CCAction *easedMove    = [CCEaseSineOut actionWithAction:move];
-    CCAction *delay        = [CCDelayTime   actionWithDuration:delayTime];
+    CGFloat minDist = 200; // distance when buga see the hero and move towards him
+    if ([self isHeroCanBeSeenBy:bugafish] && (ccpDistance(bacPos, bugaPos) < minDist))
+    {
+        dx = bacilla.position.x - bugafish.position.x - 50 + rand()%100;
+        dy = bacilla.position.y - bugafish.position.y - 30 + rand()%60;
+    }
+    else
+    {
+        dx = -200 + random()%400;
+        dy = -30  + random()%60;
+    }
+    
+    CGFloat moveTime  = 1.0;
+    CGFloat delayTime = 0.8 + random()%2;
+    
+    CCActionInterval *move = [CCMoveBy        actionWithDuration:moveTime position:ccp(dx,dy)];
+    CCAction *easedMove    = [CCEaseSineInOut actionWithAction:move];
+    CCAction *delay        = [CCDelayTime     actionWithDuration:delayTime];
     
     CGFloat sgnX = dx<0 ? -1 : 1;
     bugafish.scaleX = sgnX;
     
-    NSMutableArray *acitons = [NSMutableArray arrayWithObjects:easedMove, delay, nil];
+    NSMutableArray *actions = [NSMutableArray arrayWithObjects:easedMove, delay, nil];
     
+    // check whether buga needs to be updated after move or deleted (when it run out of the world bounds)
     CGPoint endPos = ccp(bugafish.position.x + dx, bugafish.position.y + dy);
     if(CGRectContainsPoint(worldBounds, endPos))
     {
         CCAction *updateCall = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishUpdate:)];
-        [acitons addObject:updateCall];
+        [actions addObject:updateCall];
     }
     else
     {
         CCAction *removeCall = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishRemove:)];
-        [acitons addObject:removeCall];
+        [actions addObject:removeCall];
     }
-    CCAction *sequence = [CCSequence actionsWithArray:acitons];
-    [bugafish runAction:sequence];
+    
+    [bugafish runAction:[CCSequence actionsWithArray:actions]];
 }
 
 - (void)starUpdate
@@ -290,6 +306,15 @@
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bugafish"];
     [bn removeChild:bugafish cleanup:YES];
 }
+
+//--------------------------------------------------------------
+
+- (BOOL)isHeroCanBeSeenBy:(CCSprite*)evilCreature
+{
+    // check direction towards hero and rotation of the creature
+    return (bacilla.position.x - evilCreature.position.x)*evilCreature.scaleX > 0;
+}
+
 
 //--------------------------------------------------------------
 
