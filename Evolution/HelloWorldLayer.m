@@ -408,10 +408,9 @@
 
 - (void)update:(ccTime)dt
 {
-    CGRect bacRect = CGRectMake(bacilla.position.x - bacilla.contentSize.width/2,
-                                bacilla.position.y - bacilla.contentSize.height/2,
-                                bacilla.contentSize.width,
-                                bacilla.contentSize.height);
+    CGFloat w = bacilla.displayedFrame.rect.size.width;
+    CGFloat h = bacilla.displayedFrame.rect.size.height;
+    CGRect bacRect = CGRectMake(bacilla.position.x - w/2, bacilla.position.y - h/2, w, h);
     for (CCSprite* buga in bugafishes)
     {
         if ([self collisionDetection:buga withRect:bacRect])
@@ -438,41 +437,30 @@
     return (bacilla.position.x - evilCreature.position.x)*evilCreature.scaleX > 0;
 }
 
-- (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2
-{
-    static CCSprite *cachedsprite = nil;
-    static CGRect cachedrect = {0,0,0,0};
-    if (cachedsprite!=s1)
-    {
-        cachedsprite = s1;
-        cachedrect = CGRectMake(s1.position.x - s1.contentSize.width/2,
-                                s1.position.y - s1.contentSize.height/2,
-                                s1.contentSize.width,
-                                s1.contentSize.height);
-    }
-    CGRect s2rect = CGRectMake(s2.position.x - s2.contentSize.width/2,
-                               s2.position.y - s2.contentSize.height/2,
-                               s2.contentSize.width,
-                               s2.contentSize.height);
-    return CGRectIntersectsRect(cachedrect, s2rect);
-}
-
-- (BOOL)collisionDetection:(CCSprite*)s1 withRect:(CGRect)rect2
-{
+//- (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2
+//{
 //    static CCSprite *cachedsprite = nil;
 //    static CGRect cachedrect = {0,0,0,0};
 //    if (cachedsprite!=s1)
 //    {
 //        cachedsprite = s1;
-      CGRect rect1 = CGRectMake(s1.position.x - s1.contentSize.width/2,
-                                s1.position.y - s1.contentSize.height/2,
-                                s1.contentSize.width,
-                                s1.contentSize.height);
+//        cachedrect = CGRectMake(s1.position.x - s1.contentSize.width/2,
+//                                s1.position.y - s1.contentSize.height/2,
+//                                s1.contentSize.width,
+//                                s1.contentSize.height);
 //    }
 //    CGRect s2rect = CGRectMake(s2.position.x - s2.contentSize.width/2,
 //                               s2.position.y - s2.contentSize.height/2,
 //                               s2.contentSize.width,
 //                               s2.contentSize.height);
+//    return CGRectIntersectsRect(cachedrect, s2rect);
+//}
+
+- (BOOL)collisionDetection:(CCSprite*)s1 withRect:(CGRect)rect2
+{
+    CGFloat w = s1.displayedFrame.rect.size.width;
+    CGFloat h = s1.displayedFrame.rect.size.height;
+    CGRect rect1 = CGRectMake(s1.position.x - w/2, s1.position.y - h/2, w, h);
     return CGRectIntersectsRect(rect1, rect2);
 }
 
