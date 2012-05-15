@@ -9,7 +9,8 @@
 #import "HelloWorldLayer.h"
 #import "AnimationLoader.h"
 
-#define moveActionTag 100500
+#define bacMoveActionTag 100500
+#define bugaDashedActionTag 100501
 
 @interface HelloWorldLayer ()
  @property (nonatomic, retain) CCSprite *bacilla;
@@ -169,6 +170,8 @@
     CGFloat w = worldSize.width/2;
     CGFloat h = worldSize.height/2;
     bacilla.position = ccp(w,h);
+    
+//    bacilla.rotation = 45;
 }
 
 - (void)addBugafish
@@ -185,6 +188,7 @@
     
     [bugafishes addObject:bugafish];
     [self bugafishUpdate:bugafish];
+//    [self dashBuga:bugafish];
 }
 
 - (void)addStar
@@ -321,19 +325,23 @@
     angle *= M_PI/180; // radians
     
     CGFloat moveDist = 200;
-    CGFloat dx = moveDist*cos(angle);
-    CGFloat dy = moveDist*sin(angle);
+    CGFloat dx = moveDist*cos(-angle);
+    CGFloat dy = moveDist*sin(-angle);
     
-    id rotation         = [CCRotateBy actionWithDuration:0.5 angle:360];
+    id rotation         = [CCRotateBy actionWithDuration:0.5 angle:180];
     id repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
-    id easedRepRotation = [CCEaseOut actionWithAction:repeatedRotation];
+//    id easedRepRotation = [CCEaseOut actionWithAction:repeatedRotation];
     id move             = [CCMoveBy actionWithDuration:2 position:ccp(dx,dy)];
-    id spawnedActions   = [CCSpawn actions:easedRepRotation, move, nil];
+    id spawnedActions   = [CCSpawn actions:repeatedRotation, move, nil];
     
     id callUpdate       = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishUpdate:)];
-    id allActions       = [CCSequence actions:spawnedActions, callUpdate, nil];
+//    id callUpdate = [CCCallBlockN actionWithBlock:^(CCNode *n)
+//                                         { n.position = ccp(worldSize.width/2, worldSize.height/2);}];
+    id allActions       = [CCEaseSineOut actionWithAction:[CCSequence actions:spawnedActions, callUpdate, nil]];
     
+    ((CCAction*)allActions).tag = bugaDashedActionTag;
     [buga runAction:allActions];
+//    [buga runAction:[CCRepeatForever actionWithAction:allActions]];
 }
 
 //--------------------------------------------------------------
@@ -391,7 +399,7 @@
     self.prevTapTime = [NSDate date];
     
     
-    [bacilla stopActionByTag:moveActionTag];
+    [bacilla stopActionByTag:bacMoveActionTag];
     CCAction *moveAction = [CCSequence actions: [CCEaseSineOut actionWithAction:
                                                  [CCMoveBy actionWithDuration:moveDuration position:ccp(dx,dy)]],
                             [CCCallBlock actionWithBlock:^(void)
@@ -400,7 +408,7 @@
                                  bacDoublespeeded = NO;
                              }],
                             nil];
-    moveAction.tag = moveActionTag;
+    moveAction.tag = bacMoveActionTag;
     [bacilla runAction:moveAction];
 }
 
@@ -413,6 +421,7 @@
     CGRect bacRect = CGRectMake(bacilla.position.x - w/2, bacilla.position.y - h/2, w, h);
     for (CCSprite* buga in bugafishes)
     {
+        if ([buga getActionByTag:bugaDashedActionTag]) continue; // skip dashed bugafish
         if ([self collisionDetection:buga withRect:bacRect])
         {
             if ([self isHeroCanBeSeenBy:buga])
@@ -424,7 +433,7 @@
                 [self dashBuga:buga];
             }
             
-            [bacilla stopActionByTag:moveActionTag];
+            [bacilla stopActionByTag:bacMoveActionTag];
         }
     }
 }
