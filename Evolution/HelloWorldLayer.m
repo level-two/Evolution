@@ -9,6 +9,10 @@
 #import "HelloWorldLayer.h"
 #import "AnimationLoader.h"
 
+#define DoubleSpeedDenyTime 1.5
+#define MinTouchRadius 100 // minimum distance of touch to bacilla
+#define BacVelocity 150 // px/s
+
 #define bacMoveActionTag 100500
 #define bugaDashedActionTag 100501
 
@@ -32,6 +36,7 @@
  @property (nonatomic, assign) NSInteger maxPills;
 
  @property (nonatomic, assign) BOOL bacDoublespeeded;
+ @property (nonatomic, assign) BOOL denyDoubleSpeed;
 
  @property (nonatomic, assign) CGSize winSize, worldSize;
  @property (nonatomic, assign) CGRect worldBounds;
@@ -56,6 +61,7 @@
  @synthesize redPills, greenPills;
 
  @synthesize bacDoublespeeded;
+ @synthesize denyDoubleSpeed;
 
  @synthesize maxFishes, maxStars, maxPills;
  @synthesize winSize, worldSize;
@@ -92,7 +98,7 @@
     [self addBacilla];
     [self addBugafish];
     
-    self.prevTapTime = [NSDate date];
+    self.prevTapTime = [NSDate dateWithTimeIntervalSince1970:0];
     
     maxFishes = 5; // this constants should be recalculated later
     maxStars = 3;  // depending on LEVEL or SCORE
@@ -325,8 +331,8 @@
     angle *= M_PI/180; // radians
     
     CGFloat moveDist = 200;
-    CGFloat dx = moveDist*cos(-angle);
-    CGFloat dy = moveDist*sin(-angle);
+    CGFloat dx = moveDist*cos(angle);
+    CGFloat dy = moveDist*sin(angle);
     
     id rotation         = [CCRotateBy actionWithDuration:0.5 angle:180];
     id repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
@@ -381,20 +387,24 @@
     bacilla.scaleX = sgnX; // change direction if needed
     
     
-    CGFloat moveDuration;
+    CGFloat dist = ccpDistance(location, ccp(bScrX, bScrY));
+    CGFloat moveDuration = dist / BacVelocity;
     NSTimeInterval ti = -[prevTapTime timeIntervalSinceNow];
-    if (ti > 0.2)
+    if (ti > 0.2 || denyDoubleSpeed)
     {
-        moveDuration = 1.5;
+//        moveDuration = 1.5;
         bacillaAnimation.delay = 0.1;
         bacDoublespeeded = NO;
     }
     else
     {
         // if tap period is small - move hero with double speed
-        moveDuration = 0.75;
+//        moveDuration = 0.75;
+        moveDuration /= 2;
         bacillaAnimation.delay = 0.08;
         bacDoublespeeded = YES;
+        denyDoubleSpeed = YES;
+        [self performSelector:@selector(allowDoubleSpeed) withObject:nil afterDelay:DoubleSpeedDenyTime];
     }
     self.prevTapTime = [NSDate date];
     
@@ -410,6 +420,12 @@
                             nil];
     moveAction.tag = bacMoveActionTag;
     [bacilla runAction:moveAction];
+}
+
+- (void)allowDoubleSpeed
+{
+    denyDoubleSpeed = NO;
+    NSLog(@"Yo!! DOubleSPeed allowed!");
 }
 
 //--------------------------------------------------------------
@@ -445,25 +461,6 @@
     // check direction towards hero and rotation of the creature
     return (bacilla.position.x - evilCreature.position.x)*evilCreature.scaleX > 0;
 }
-
-//- (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2
-//{
-//    static CCSprite *cachedsprite = nil;
-//    static CGRect cachedrect = {0,0,0,0};
-//    if (cachedsprite!=s1)
-//    {
-//        cachedsprite = s1;
-//        cachedrect = CGRectMake(s1.position.x - s1.contentSize.width/2,
-//                                s1.position.y - s1.contentSize.height/2,
-//                                s1.contentSize.width,
-//                                s1.contentSize.height);
-//    }
-//    CGRect s2rect = CGRectMake(s2.position.x - s2.contentSize.width/2,
-//                               s2.position.y - s2.contentSize.height/2,
-//                               s2.contentSize.width,
-//                               s2.contentSize.height);
-//    return CGRectIntersectsRect(cachedrect, s2rect);
-//}
 
 - (BOOL)collisionDetection:(CCSprite*)s1 withRect:(CGRect)rect2
 {
