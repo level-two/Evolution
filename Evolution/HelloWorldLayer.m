@@ -12,6 +12,13 @@
 #define DoubleSpeedDenyTime 1.5
 #define MinTouchRadius 100 // minimum distance of touch to bacilla
 #define BacVelocity 150 // px/s
+#define StrongHitMinDistance 50
+
+#define BugaWeakHitShortDist 50
+#define BugaWeakHitLongDist 100
+#define BugaStrongHitShortDist 150
+#define BugaStrongHitLongDist 200
+
 
 #define bacMoveActionTag 100500
 #define bugaDashedActionTag 100501
@@ -37,6 +44,7 @@
 
  @property (nonatomic, assign) BOOL bacDoublespeeded;
  @property (nonatomic, assign) BOOL denyDoubleSpeed;
+ @property (nonatomic, assign) BOOL canMakeStrongHit; // indicates when hero accelerated enoguh to make strong hit
 
  @property (nonatomic, assign) CGSize winSize, worldSize;
  @property (nonatomic, assign) CGRect worldBounds;
@@ -62,6 +70,7 @@
 
  @synthesize bacDoublespeeded;
  @synthesize denyDoubleSpeed;
+ @synthesize canMakeStrongHit;
 
  @synthesize maxFishes, maxStars, maxPills;
  @synthesize winSize, worldSize;
@@ -194,7 +203,7 @@
     
     [bugafishes addObject:bugafish];
     [self bugafishUpdate:bugafish];
-//    [self dashBuga:bugafish];
+//    [self dashBuga:bugafish]; //debug
 }
 
 - (void)addStar
@@ -330,24 +339,52 @@
     if (bacilla.scaleX < 0) angle = 180 - angle;
     angle *= M_PI/180; // radians
     
-    CGFloat moveDist = 200;
-    CGFloat dx = moveDist*cos(angle);
-    CGFloat dy = moveDist*sin(angle);
+    CGFloat dx;
+    CGFloat dy;
     
-    id rotation         = [CCRotateBy actionWithDuration:0.5 angle:180];
-    id repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
-//    id easedRepRotation = [CCEaseOut actionWithAction:repeatedRotation];
+    id repeatedRotation = nil;
+    
+    if (!bacDoublespeeded)
+    {
+        if (!canMakeStrongHit)
+        {
+            dx = BugaWeakHitShortDist*cos(angle);
+            dy = BugaWeakHitShortDist*sin(angle);
+        }
+        else
+        {
+            dx = BugaWeakHitLongDist*cos(angle);
+            dy = BugaWeakHitLongDist*sin(angle);
+        }
+    }
+    else
+    {
+        if (!canMakeStrongHit)
+        {
+            dx = BugaStrongHitShortDist*cos(angle);
+            dy = BugaStrongHitShortDist*sin(angle);
+        }
+        else
+        {
+            dx = BugaStrongHitLongDist*cos(angle);
+            dy = BugaStrongHitLongDist*sin(angle);
+            id rotation         = [CCRotateBy actionWithDuration:0.5 angle:180];
+            repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
+        }
+    }
     id move             = [CCMoveBy actionWithDuration:2 position:ccp(dx,dy)];
-    id spawnedActions   = [CCSpawn actions:repeatedRotation, move, nil];
+    id spawnedActions   = [CCSpawn actions:move, repeatedRotation, nil];
     
     id callUpdate       = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishUpdate:)];
 //    id callUpdate = [CCCallBlockN actionWithBlock:^(CCNode *n)
-//                                         { n.position = ccp(worldSize.width/2, worldSize.height/2);}];
+//                                         { n.position = ccp(worldSize.width/2, worldSize.height/2);}]; // debug
+    
+    
     id allActions       = [CCEaseSineOut actionWithAction:[CCSequence actions:spawnedActions, callUpdate, nil]];
     
     ((CCAction*)allActions).tag = bugaDashedActionTag;
     [buga runAction:allActions];
-//    [buga runAction:[CCRepeatForever actionWithAction:allActions]];
+//    [buga runAction:[CCRepeatForever actionWithAction:allActions]]; // debug
 }
 
 //--------------------------------------------------------------
@@ -392,34 +429,54 @@
     NSTimeInterval ti = -[prevTapTime timeIntervalSinceNow];
     if (ti > 0.2 || denyDoubleSpeed)
     {
-//        moveDuration = 1.5;
         bacillaAnimation.delay = 0.1;
         bacDoublespeeded = NO;
     }
     else
     {
         // if tap period is small - move hero with double speed
-//        moveDuration = 0.75;
         moveDuration /= 2;
         bacillaAnimation.delay = 0.08;
         bacDoublespeeded = YES;
         denyDoubleSpeed = YES;
         [self performSelector:@selector(allowDoubleSpeed) withObject:nil afterDelay:DoubleSpeedDenyTime];
     }
+    
     self.prevTapTime = [NSDate date];
     
+
+    id stopped = [CCCallBlock actionWithBlock:^(void)
+                  { 
+                      bacillaAnimation.delay = 0.2;
+                      bacDoublespeeded = NO;
+                      canMakeStrongHit = NO; //reset when stopped
+                  }];
     
+    CCSequence *sequence;
+    if (dist < StrongHitMinDistance)
+    {
+        id moveBy = [CCMoveBy actionWithDuration:moveDuration position:ccp(dx,dy)];
+        sequence = [CCSequence actions:moveBy, stopped, nil];
+    }
+    else
+    {
+        CGFloat k = StrongHitMinDistance/dist;
+        CGFloat dx1 = dx*k;
+        CGFloat dy1 = dy*k;
+        CGFloat dt1 = moveDuration*k;
+        CGFloat dx2 = dx-dx1;
+        CGFloat dy2 = dy-dy1;
+        CGFloat dt2 = moveDuration-dt1;
+        id move1 = [CCMoveBy actionWithDuration:dt1 position:ccp(dx1,dy1)];
+        id move1End = [CCCallBlock actionWithBlock:^(void){ canMakeStrongHit = YES;}];
+        id move2 = [CCMoveBy actionWithDuration:dt2 position:ccp(dx2,dy2)];
+        sequence = [CCSequence actions:move1, move1End, move2, stopped, nil];        
+    }
+    
+    CCAction *easedMove = [CCEaseSineOut actionWithAction: sequence];
+    easedMove.tag = bacMoveActionTag;
     [bacilla stopActionByTag:bacMoveActionTag];
-    CCAction *moveAction = [CCSequence actions: [CCEaseSineOut actionWithAction:
-                                                 [CCMoveBy actionWithDuration:moveDuration position:ccp(dx,dy)]],
-                            [CCCallBlock actionWithBlock:^(void)
-                             { 
-                                 bacillaAnimation.delay = 0.2;
-                                 bacDoublespeeded = NO;
-                             }],
-                            nil];
-    moveAction.tag = bacMoveActionTag;
-    [bacilla runAction:moveAction];
+    [bacilla runAction:easedMove];
 }
 
 - (void)allowDoubleSpeed
@@ -444,7 +501,7 @@
             {
 //                [self gamover];
             }
-            else if (bacDoublespeeded)
+            else //if (bacDoublespeeded)
             {
                 [self dashBuga:buga];
             }
