@@ -13,6 +13,8 @@
 #define MinTouchRadius 100 // minimum distance of touch to bacilla
 #define BacVelocity 150 // px/s
 #define StrongHitMinDistance 50
+#define BacDapDist 30
+#define BacDapTime 0.5
 
 #define BugaWeakHitShortDist 50
 #define BugaWeakHitLongDist 100
@@ -22,6 +24,8 @@
 
 #define bacMoveActionTag 100500
 #define bugaDashedActionTag 100501
+#define bacDappingActionTag 100502
+#define bugaMoveActionTag 100503
 
 @interface HelloWorldLayer ()
  @property (nonatomic, retain) CCSprite *bacilla;
@@ -197,7 +201,7 @@
     
     CGFloat w = worldSize.width/2;
     CGFloat h = worldSize.height/2;
-    bugafish.position = ccp(w,h);
+    bugafish.position = ccp(w+100,h);
     
     [bugafish runAction:[CCRepeatForever actionWithAction:bugafishMoveAction]];
     
@@ -303,7 +307,10 @@
         [actions addObject:removeCall];
     }
     
-    [bugafish runAction:[CCSequence actionsWithArray:actions]];
+    CCAction* bugaMove = [CCSequence actionsWithArray:actions];
+    bugaMove.tag = bugaMoveActionTag;
+    
+    [bugafish runAction:bugaMove];
 }
 
 - (void)starUpdate
@@ -328,24 +335,36 @@
 
 //--------------------------------------------------------------
 
+- (BOOL)bacCanMove
+{
+    // here will be checks for all actions and states which do not allow tap processing
+    if ([bacilla getActionByTag:bacDappingActionTag]) return NO;
+    return YES;
+}
+
+//--------------------------------------------------------------
+
 - (void)bugafishRemove:(CCSprite*)buga
 {
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bugafish"];
     [bn removeChild:buga cleanup:YES];
 }
 
+
 - (void)dashBuga:(CCSprite*)buga
 {
-    [buga stopAllActions];
-    
     CGFloat angle = bacilla.rotation;
     if (bacilla.scaleX < 0) angle = 180 + angle;
     angle *= M_PI/180; // radians
     
+    // this is workaround
+    // when collision is detected rects of buga and bacilla are intersecting
+    // and they both couldn't move.
+    // so move buga a little to prevent such situation
+    buga.position = ccpAdd(buga.position, ccp(5*cos(angle),-5*sin(angle)));
+    
     CGFloat dx;
     CGFloat dy;
-    
-    id repeatedRotation = nil;
     
     if (!bacDoublespeeded) {
         if (!canMakeStrongHit) {
@@ -366,24 +385,38 @@
             dx =  BugaStrongHitLongDist*cos(angle);
             dy = -BugaStrongHitLongDist*sin(angle);
             id rotation      = [CCRotateBy actionWithDuration:0.5 angle:180];
-            repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
+            id repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
+            id eased = [CCEaseSineOut actionWithAction:repeatedRotation];
+            [buga runAction:eased];
         }
     }
-    id move             = [CCMoveBy actionWithDuration:2 position:ccp(dx,dy)];
-    id spawnedActions   = [CCSpawn actions:move, repeatedRotation, nil];
+    id move       = [CCMoveBy actionWithDuration:2 position:ccp(dx,dy)];
+    id callUpdate = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishUpdate:)];
+    CCAction *all = [CCEaseSineOut actionWithAction:[CCSequence actions:move, callUpdate, nil]];
+    all.tag = bugaDashedActionTag;
     
-    id callUpdate       = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishUpdate:)];
-//    id callUpdate = [CCCallBlockN actionWithBlock:^(CCNode *n)
-//                                         { n.position = ccp(worldSize.width/2, worldSize.height/2);}]; // debug
-    
-    
-    id allActions       = [CCEaseSineOut actionWithAction:[CCSequence actions:spawnedActions, callUpdate, nil]];
-    
-    ((CCAction*)allActions).tag = bugaDashedActionTag;
-    [buga runAction:allActions];
-//    [buga runAction:[CCRepeatForever actionWithAction:allActions]]; // debug
+    [buga stopActionByTag:bugaDashedActionTag];
+    [buga stopActionByTag:bugaMoveActionTag];
+    [buga runAction:all];
 }
 
+
+- (void)heroDapFromBuga:(CCSprite*)buga
+{
+    CGFloat angle = bacilla.rotation;
+    if (bacilla.scaleX < 0) angle = 180 + angle;
+    angle -= 180;       // direction opposite to the bacilla's move
+    angle *= M_PI/180;  // radians
+    CGFloat dx =  BacDapDist*cos(angle);
+    CGFloat dy = -BacDapDist*sin(angle);
+    
+    id moveBackwards = [CCMoveBy actionWithDuration:BacDapTime position:ccp(dx, dy)];
+    CCAction *easedMove = [CCEaseSineOut actionWithAction:moveBackwards];
+    easedMove.tag = bacDappingActionTag;
+    
+    [bacilla stopActionByTag:bacMoveActionTag];
+    [bacilla runAction:easedMove];
+}
 //--------------------------------------------------------------
 
 #pragma mark - Touches methods
@@ -400,6 +433,8 @@
 
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
+    if (![self bacCanMove]) return;
+    
     CGPoint location = [touch locationInView:[touch view]];
     location = [[CCDirector sharedDirector] convertToGL:location];
     
@@ -491,21 +526,20 @@
     CGRect bacRect = CGRectMake(bacilla.position.x - w/2, bacilla.position.y - h/2, w, h);
     for (CCSprite* buga in bugafishes)
     {
-        if ([buga getActionByTag:bugaDashedActionTag]) continue; // skip dashed bugafish
+//        if ([buga getActionByTag:bugaDashedActionTag]) continue; // skip dashed bugafish
         if ([self collisionDetection:buga withRect:bacRect])
         {
-            if ([self isHeroCanBeSeenBy:buga])
+            if ([buga getActionByTag:bugaDashedActionTag] || ![self isHeroCanBeSeenBy:buga])
+            {
+                [self dashBuga:buga];
+            }
+            else //if (bacDoublespeeded)
             {
 //                [self gamover];
                 
                 [self dashBuga:buga]; // debug
             }
-            else //if (bacDoublespeeded)
-            {
-                [self dashBuga:buga];
-            }
-            
-            [bacilla stopActionByTag:bacMoveActionTag];
+            [self heroDapFromBuga:buga];
         }
     }
 }
