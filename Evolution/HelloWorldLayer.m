@@ -339,7 +339,7 @@
     [buga stopAllActions];
     
     CGFloat angle = bacilla.rotation;
-    if (bacilla.scaleX < 0) angle = 180 - angle;
+    if (bacilla.scaleX < 0) angle = 180 + angle;
     angle *= M_PI/180; // radians
     
     CGFloat dx;
@@ -347,31 +347,25 @@
     
     id repeatedRotation = nil;
     
-    if (!bacDoublespeeded)
-    {
-        if (!canMakeStrongHit)
-        {
-            dx = BugaWeakHitShortDist*cos(angle);
-            dy = BugaWeakHitShortDist*sin(angle);
+    if (!bacDoublespeeded) {
+        if (!canMakeStrongHit) {
+            dx =  BugaWeakHitShortDist*cos(angle);
+            dy = -BugaWeakHitShortDist*sin(angle);
         }
-        else
-        {
-            dx = BugaWeakHitLongDist*cos(angle);
-            dy = BugaWeakHitLongDist*sin(angle);
+        else {
+            dx =  BugaWeakHitLongDist*cos(angle);
+            dy = -BugaWeakHitLongDist*sin(angle);
         }
     }
-    else
-    {
-        if (!canMakeStrongHit)
-        {
-            dx = BugaStrongHitShortDist*cos(angle);
-            dy = BugaStrongHitShortDist*sin(angle);
+    else {
+        if (!canMakeStrongHit) {
+            dx =  BugaStrongHitShortDist*cos(angle);
+            dy = -BugaStrongHitShortDist*sin(angle);
         }
-        else
-        {
-            dx = BugaStrongHitLongDist*cos(angle);
-            dy = BugaStrongHitLongDist*sin(angle);
-            id rotation         = [CCRotateBy actionWithDuration:0.5 angle:180];
+        else {
+            dx =  BugaStrongHitLongDist*cos(angle);
+            dy = -BugaStrongHitLongDist*sin(angle);
+            id rotation      = [CCRotateBy actionWithDuration:0.5 angle:180];
             repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
         }
     }
@@ -503,6 +497,8 @@
             if ([self isHeroCanBeSeenBy:buga])
             {
 //                [self gamover];
+                
+                [self dashBuga:buga]; // debug
             }
             else //if (bacDoublespeeded)
             {
