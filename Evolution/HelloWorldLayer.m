@@ -288,8 +288,11 @@
     NSMutableArray *actions = [NSMutableArray arrayWithObjects:easedMove, delay, nil];
     
     // check whether buga needs to be updated after move or deleted (when it run out of the world bounds)
-    CGPoint endPos = ccp(bugafish.position.x + dx, bugafish.position.y + dy);
-    if(CGRectContainsPoint(worldBounds, endPos))
+    CGRect endRect = CGRectMake(bugafish.position.x + dx,
+                                 bugafish.position.y + dy,
+                                 bugafish.displayedFrame.rect.size.width,
+                                 bugafish.displayedFrame.rect.size.height);
+    if(CGRectIntersectsRect(worldBounds, endRect))
     {
         CCAction *updateCall = [CCCallFuncN actionWithTarget:self selector:@selector(bugafishUpdate:)];
         [actions addObject:updateCall];
