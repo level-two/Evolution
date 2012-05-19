@@ -21,6 +21,8 @@
 #define BugaStrongHitShortDist 150
 #define BugaStrongHitLongDist 200
 
+#define BugaRotationSpeed 360/1.0 // degrees/sec
+
 
 #define bacMoveActionTag 100500
 #define bugaDashedActionTag 100501
@@ -207,7 +209,6 @@
     
     [bugafishes addObject:bugafish];
     [self bugafishUpdate:bugafish];
-//    [self dashBuga:bugafish]; //debug
 }
 
 - (void)addStar
@@ -384,7 +385,8 @@
         else {
             dx =  BugaStrongHitLongDist*cos(angle);
             dy = -BugaStrongHitLongDist*sin(angle);
-            id rotation      = [CCRotateBy actionWithDuration:0.5 angle:180];
+            CGFloat currRot = (int)buga.rotation % 360;
+            id rotation      = [CCRotateBy actionWithDuration:0.5 angle:180-currRot/4];
             id repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
             id eased = [CCEaseSineOut actionWithAction:repeatedRotation];
             [buga runAction:eased];
