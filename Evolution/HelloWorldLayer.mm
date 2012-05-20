@@ -149,25 +149,15 @@ static b2PolygonShape *bacPoly;
     self.bugafishAnimation = [[AnimationLoader sharedInstance] animationWithName:@"Bugafish_move"];
     self.bugafishMoveAction = [CCAnimate actionWithAnimation:bugafishAnimation restoreOriginalFrame:NO];
     
-//    int num = 7;
-//    b2Vec2 verts[] = {
-//        b2Vec2(-0.7f / PTM_RATIO, 20.5f / PTM_RATIO),
-//        b2Vec2(-37.5f / PTM_RATIO, 25.2f / PTM_RATIO),
-//        b2Vec2(-55.5f / PTM_RATIO, 10.7f / PTM_RATIO),
-//        b2Vec2(-56.2f / PTM_RATIO, 1.5f / PTM_RATIO),
-//        b2Vec2(-25.7f / PTM_RATIO, -20.5f / PTM_RATIO),
-//        b2Vec2(-10.0f / PTM_RATIO, -20.0f / PTM_RATIO),
-//        b2Vec2(-1.5f / PTM_RATIO, -12.5f / PTM_RATIO)
-//    };
-    
-    int num = 6;
+    int num = 7;
     b2Vec2 verts[] = {
-        b2Vec2(31.0f / PTM_RATIO, 13.2f / PTM_RATIO),
-        b2Vec2(-6.0f / PTM_RATIO, 19.0f / PTM_RATIO),
-        b2Vec2(-24.7f / PTM_RATIO, 5.7f / PTM_RATIO),
         b2Vec2(-24.5f / PTM_RATIO, -6.7f / PTM_RATIO),
-        b2Vec2(4.0f / PTM_RATIO, -24.7f / PTM_RATIO),
-        b2Vec2(28.7f / PTM_RATIO, -20.0f / PTM_RATIO)
+        b2Vec2(0.0f / PTM_RATIO, -25.0f / PTM_RATIO),
+        b2Vec2(22.2f / PTM_RATIO, -24.7f / PTM_RATIO),
+        b2Vec2(30.5f / PTM_RATIO, -15.5f / PTM_RATIO),
+        b2Vec2(31.0f / PTM_RATIO, 15.2f / PTM_RATIO),
+        b2Vec2(-4.7f / PTM_RATIO, 19.7f / PTM_RATIO),
+        b2Vec2(-23.7f / PTM_RATIO, 6.5f / PTM_RATIO)
     };
     
     bugaPoly = new b2PolygonShape();
@@ -214,8 +204,6 @@ static b2PolygonShape *bacPoly;
     CGFloat w = worldSize.width/2;
     CGFloat h = worldSize.height/2;
     bacilla.position = ccp(w,h);
-    
-//    bacilla.rotation = 45;
 }
 
 - (void)addBugafish
@@ -379,14 +367,14 @@ static b2PolygonShape *bacPoly;
 - (void)dashBuga:(CCSprite*)buga
 {
     CGFloat angle = bacilla.rotation;
-    if (bacilla.scaleX < 0) angle = 180 + angle;
+    if (bacilla.scaleX < 0) angle += 180;
     angle *= M_PI/180; // radians
     
     // this is workaround
     // when collision is detected rects of buga and bacilla are intersecting
     // and they both couldn't move.
     // so move buga a little to prevent such situation
-    buga.position = ccpAdd(buga.position, ccp(5*cos(angle),-5*sin(angle)));
+    buga.position = ccpAdd(buga.position, ccp(4*cos(angle),-4*sin(angle)));
     
     CGFloat dx;
     CGFloat dy;
@@ -410,9 +398,9 @@ static b2PolygonShape *bacPoly;
             dx =  BugaStrongHitLongDist*cos(angle);
             dy = -BugaStrongHitLongDist*sin(angle);
             CGFloat currRot = (int)buga.rotation % 360;
-            id rotation      = [CCRotateBy actionWithDuration:0.5 angle:180-currRot/4];
+            id rotation         = [CCRotateBy actionWithDuration:0.5 angle:180-currRot/4];
             id repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
-            id eased = [CCEaseSineOut actionWithAction:repeatedRotation];
+            id eased            = [CCEaseSineOut actionWithAction:repeatedRotation];
             [buga runAction:eased];
         }
     }
@@ -430,7 +418,7 @@ static b2PolygonShape *bacPoly;
 - (void)heroDapFromBuga:(CCSprite*)buga
 {
     CGFloat angle = bacilla.rotation;
-    if (bacilla.scaleX < 0) angle = 180 + angle;
+    if (bacilla.scaleX < 0) angle += 180;
     angle -= 180;       // direction opposite to the bacilla's move
     angle *= M_PI/180;  // radians
     CGFloat dx =  BacDapDist*cos(angle);
@@ -547,19 +535,15 @@ static b2PolygonShape *bacPoly;
 
 - (void)update:(ccTime)dt
 {
-//    CGFloat w = bacilla.displayedFrame.rect.size.width;
-//    CGFloat h = bacilla.displayedFrame.rect.size.height;
-//    CGRect bacRect = CGRectMake(bacilla.position.x - w/2, bacilla.position.y - h/2, w, h);
     for (CCSprite* buga in bugafishes)
     {
-//        if ([buga getActionByTag:bugaDashedActionTag]) continue; // skip dashed bugafish
         if ([self collisionDetection:buga with:bacilla])
         {
             if ([buga getActionByTag:bugaDashedActionTag] || ![self isHeroCanBeSeenBy:buga])
             {
                 [self dashBuga:buga];
             }
-            else //if (bacDoublespeeded)
+            else
             {
 //                [self gamover];
                 
@@ -580,29 +564,19 @@ static b2PolygonShape *bacPoly;
 
 - (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2
 {
-//    CGFloat w = s1.displayedFrame.rect.size.width;
-//    CGFloat h = s1.displayedFrame.rect.size.height;
-//    CGRect rect1 = CGRectMake(s1.position.x - w/2, s1.position.y - h/2, w, h);
-//    return CGRectIntersectsRect(rect1, rect2);
-    b2Transform transform1;
-    b2Vec2 wPos1;
+    b2Transform transform1;  b2Vec2 wPos1;
+    b2Transform transform2;  b2Vec2 wPos2;
     wPos1.Set(SCREEN_TO_WORLD(s1.position.x), SCREEN_TO_WORLD(s1.position.y));
-    CGFloat wAngle1 = COCOS_ROTATION_TO_B2_ANGLE(s1.rotation);
-    if (s1.scaleX == -1)
-        wAngle1 -= COCOS_ROTATION_TO_B2_ANGLE(180);
-    transform1.Set(wPos1, wAngle1);
-    
-    b2Transform transform2;
-    b2Vec2 wPos2;
     wPos2.Set(SCREEN_TO_WORLD(s2.position.x), SCREEN_TO_WORLD(s2.position.y));
+    CGFloat wAngle1 = COCOS_ROTATION_TO_B2_ANGLE(s1.rotation);
     CGFloat wAngle2 = COCOS_ROTATION_TO_B2_ANGLE(s2.rotation);
-    if (s2.scaleX == -1)
-        wAngle2 -= COCOS_ROTATION_TO_B2_ANGLE(180);
+    if (s1.scaleX == -1) wAngle1 -= COCOS_ROTATION_TO_B2_ANGLE(180);
+    if (s2.scaleX == -1) wAngle2 -= COCOS_ROTATION_TO_B2_ANGLE(180);
+    transform1.Set(wPos1, wAngle1);
     transform2.Set(wPos2, wAngle2);
     
     b2PolygonShape *poly1 = NULL;
     b2PolygonShape *poly2 = NULL;
-    
     if (s1.tag == bacTag) poly1 = bacPoly;
     if (s2.tag == bacTag) poly2 = bacPoly;
     if (s1.tag == bugaTag) poly1 = bugaPoly;
@@ -636,4 +610,35 @@ static b2PolygonShape *bacPoly;
     
 	[super dealloc];
 }
+
+// DEBUG STUFF
+//- (void)draw
+//{
+//    CGPoint *bacV, *bugaV;
+//    
+//    int bacVCnt = bacPoly->GetVertexCount();
+//    bacV = (struct CGPoint*)malloc(bacVCnt*sizeof(struct CGPoint));    
+//    for (int i = 0; i<bacVCnt; i++)
+//    {
+//        b2Vec2 v = bacPoly->GetVertex(i);
+//        bacV[i] = CGPointMake(bacilla.position.x + WORLD_TO_SCREEN(v.x), bacilla.position.y + WORLD_TO_SCREEN(v.y));
+//    }
+//    
+//    ccDrawPoly(bacV, bacVCnt, YES);
+//    free(bacV);
+//    
+//    
+//    CCSprite *buga = [bugafishes objectAtIndex:0];
+//    int bugaVCnt = bugaPoly->GetVertexCount();
+//    bugaV = (struct CGPoint*)malloc(bugaVCnt*sizeof(struct CGPoint));
+//    
+//    for (int i = 0; i<bugaVCnt; i++)
+//    {
+//        b2Vec2 v = bugaPoly->GetVertex(i);
+//        bugaV[i] = CGPointMake(buga.position.x + WORLD_TO_SCREEN(v.x), buga.position.y + WORLD_TO_SCREEN(v.y));
+//    }
+//    
+//    ccDrawPoly(bugaV, bugaVCnt, YES);
+//    free(bugaV);
+//}
 @end
