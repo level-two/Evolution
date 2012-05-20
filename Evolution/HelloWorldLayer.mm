@@ -397,8 +397,21 @@ static b2PolygonShape *bacPoly;
         else {
             dx =  BugaStrongHitLongDist*cos(angle);
             dy = -BugaStrongHitLongDist*sin(angle);
+            
+            b2Vec2 v; // bacilla velocity vector
+            v.Set( bacilla.scaleX*cos(CC_DEGREES_TO_RADIANS(bacilla.rotation)), 
+                  -bacilla.scaleX*sin(CC_DEGREES_TO_RADIANS(bacilla.rotation)));
+            
+            b2Vec2 r; // direction from the bacilla's center to buga's center
+            r.Set(buga.position.x - bacilla.position.x,
+                  buga.position.y - bacilla.position.y);
+            
+            float rd = b2Cross(v, r); // vector mul between v and r - give the dir of rotation
+            rd /= -fabsf(rd); // -1 or 1; minus - because positive rotation is conterclockwise
+            
+             // rotate with direction depending on relative position and bacilla's movement dir
             CGFloat currRot = (int)buga.rotation % 360;
-            id rotation         = [CCRotateBy actionWithDuration:0.5 angle:180-currRot/4];
+            id rotation         = [CCRotateBy actionWithDuration:0.5 angle:rd*(180-currRot/4)];
             id repeatedRotation = [CCRepeat actionWithAction:rotation times:4];
             id eased            = [CCEaseSineOut actionWithAction:repeatedRotation];
             [buga runAction:eased];
