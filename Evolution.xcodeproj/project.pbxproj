@@ -1353,6 +1353,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Evolution/Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				"GCC_THUMB_SUPPORT[arch=armv7]" = YES;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Evolution/libs/\"";
 				INFOPLIST_FILE = Evolution/Resources/Info.plist;
 				OTHER_LDFLAGS = "-lz";
@@ -1371,6 +1372,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Evolution/Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				"GCC_THUMB_SUPPORT[arch=armv7]" = YES;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Evolution/libs/\"";
 				INFOPLIST_FILE = Evolution/Resources/Info.plist;
 				OTHER_LDFLAGS = "-lz";
