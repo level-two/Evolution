@@ -11,7 +11,8 @@
 
 // tags
 #define bacTag 1
-#define bugaTag 2
+#define bugaTouchableTag 2
+#define bugaUntouchableTag 3
 
 // motion constants
 #define DoubleSpeedDenyTime 1.5

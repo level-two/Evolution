@@ -42,8 +42,18 @@ static b2PolygonShape *bacPoly;
  @property (nonatomic, assign) CGRect worldBounds;
  @property (nonatomic, retain) NSDate *prevTapTime;
 
- -(void)loadAnimations;
 - (void)setup;
+- (void)initBacilla;
+- (void)initBackground;
+- (void)initBugafish;
+- (void)addBackground;
+- (void)addBacilla;
+- (void)addBugafish;
+
+- (void)bugafishUpdate:(CCSprite*)bugafish;
+
+- (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2;
+- (BOOL)isHeroCanBeSeenBy:(CCSprite*)evilCreature;
 @end
 
 @implementation HelloWorldLayer
@@ -149,8 +159,8 @@ static b2PolygonShape *bacPoly;
     self.bugafishAnimation = [[AnimationLoader sharedInstance] animationWithName:@"Bugafish_move"];
     self.bugafishMoveAction = [CCAnimate actionWithAnimation:bugafishAnimation restoreOriginalFrame:NO];
     
-    int num = 7;
-    b2Vec2 verts[] = {
+    int nb = 7; // buga poly
+    b2Vec2 bp[] = {
         b2Vec2(-24.5f / PTM_RATIO, -6.7f / PTM_RATIO),
         b2Vec2(0.0f / PTM_RATIO, -25.0f / PTM_RATIO),
         b2Vec2(22.2f / PTM_RATIO, -24.7f / PTM_RATIO),
@@ -161,7 +171,7 @@ static b2PolygonShape *bacPoly;
     };
     
     bugaPoly = new b2PolygonShape();
-    bugaPoly->Set(verts, num);
+    bugaPoly->Set(bp, nb);
 }
 
 - (void)initStar
@@ -211,7 +221,7 @@ static b2PolygonShape *bacPoly;
     CCSprite *bugafish = [[AnimationLoader sharedInstance] spriteWithName:@"Bugafish_move"];
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bugafish"];
     [bn addChild:bugafish];
-    bugafish.tag = bugaTag;
+    bugafish.tag = bugaTouchableTag;
     
     CGFloat w = worldSize.width/2;
     CGFloat h = worldSize.height/2;
@@ -366,15 +376,15 @@ static b2PolygonShape *bacPoly;
 
 - (void)dashBuga:(CCSprite*)buga
 {
-    CGFloat angle = bacilla.rotation;
-    if (bacilla.scaleX < 0) angle += 180;
-    angle *= M_PI/180; // radians
-    
     // this is workaround
     // when collision is detected rects of buga and bacilla are intersecting
     // and they both couldn't move.
-    // so move buga a little to prevent such situation
-    buga.position = ccpAdd(buga.position, ccp(4*cos(angle),-4*sin(angle)));
+    buga.tag = bugaUntouchableTag;
+    [self performSelector:@selector(makeBugaTouchable:) withObject:buga afterDelay:0.1];
+    
+    CGFloat angle = bacilla.rotation;
+    if (bacilla.scaleX < 0) angle += 180;
+    angle *= M_PI/180; // radians
     
     CGFloat dx;
     CGFloat dy;
@@ -425,6 +435,11 @@ static b2PolygonShape *bacPoly;
     [buga stopActionByTag:bugaDashedActionTag];
     [buga stopActionByTag:bugaMoveActionTag];
     [buga runAction:all];
+}
+
+- (void)makeBugaTouchable:(CCSprite*)buga
+{
+    buga.tag = bugaTouchableTag;
 }
 
 
@@ -541,7 +556,6 @@ static b2PolygonShape *bacPoly;
 - (void)allowDoubleSpeed
 {
     denyDoubleSpeed = NO;
-    NSLog(@"Yo!! DOubleSPeed allowed!");
 }
 
 //--------------------------------------------------------------
@@ -550,15 +564,19 @@ static b2PolygonShape *bacPoly;
 {
     for (CCSprite* buga in bugafishes)
     {
+        if (buga.tag == bugaUntouchableTag) continue;
+        
         if ([self collisionDetection:buga with:bacilla])
         {
-            if ([buga getActionByTag:bugaDashedActionTag] || ![self isHeroCanBeSeenBy:buga])
+            BOOL death = [self isHeroCanBeSeenBy:buga];
+            if ([buga getActionByTag:bugaDashedActionTag] || !death)
             {
                 [self dashBuga:buga];
             }
             else
             {
 //                [self gamover];
+                NSLog(@"Death!");
                 
                 [self dashBuga:buga]; // debug
             }
@@ -572,11 +590,13 @@ static b2PolygonShape *bacPoly;
 - (BOOL)isHeroCanBeSeenBy:(CCSprite*)evilCreature
 {
     // check direction towards hero and rotation of the creature
-    return (bacilla.position.x - evilCreature.position.x)*evilCreature.scaleX > 0;
+    return (bacilla.position.x - evilCreature.position.x - evilCreature.displayedFrame.rect.size.width/2)*evilCreature.scaleX > 0;
 }
 
 - (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2
 {
+    // TODO: modify to handle different sprites, not only buga and bacilla
+    // maybe create dictionary of polys with sprite's tag as Key
     b2Transform transform1;  b2Vec2 wPos1;
     b2Transform transform2;  b2Vec2 wPos2;
     wPos1.Set(SCREEN_TO_WORLD(s1.position.x), SCREEN_TO_WORLD(s1.position.y));
@@ -592,8 +612,8 @@ static b2PolygonShape *bacPoly;
     b2PolygonShape *poly2 = NULL;
     if (s1.tag == bacTag) poly1 = bacPoly;
     if (s2.tag == bacTag) poly2 = bacPoly;
-    if (s1.tag == bugaTag) poly1 = bugaPoly;
-    if (s2.tag == bugaTag) poly2 = bugaPoly;
+    if (s1.tag == bugaTouchableTag) poly1 = bugaPoly;
+    if (s2.tag == bugaTouchableTag) poly2 = bugaPoly;
     
     b2Manifold manifold;
     b2CollidePolygons(&manifold, poly1, transform1, poly2, transform2);
