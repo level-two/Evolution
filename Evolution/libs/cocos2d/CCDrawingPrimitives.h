@@ -72,6 +72,11 @@ void ccDrawLine( CGPoint origin, CGPoint destination );
  */
 void ccDrawPoly( const CGPoint *vertices, NSUInteger numOfVertices, BOOL closePolygon );
 
+/** draws a filled polygon given a pointer to CGPoint coordinates and the number of vertices measured in points.
+ The polygon can be closed or open.
+ */
+void ccFillPoly( const CGPoint *poli, NSUInteger numberOfPoints, BOOL closePolygon );
+    
 /** draws a circle given the center, radius and number of segments measured in points */
 void ccDrawCircle( CGPoint center, float radius, float angle, NSUInteger segments, BOOL drawLineToCenter);
 

@@ -169,6 +169,53 @@ void ccDrawPoly( const CGPoint *poli, NSUInteger numberOfPoints, BOOL closePolyg
 	glEnable(GL_TEXTURE_2D);	
 }
 
+
+/** draws a filled polygon given a pointer to CGPoint coordinates and the number of vertices measured in points.
+ The polygon can be closed or open.
+ */
+void ccFillPoly( const CGPoint *poli, NSUInteger numberOfPoints, BOOL closePolygon )
+{
+    ccVertex2F newPoint[numberOfPoints];
+    
+    // Default GL States: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
+    //
+    //
+    glDisable(GL_TEXTURE_2D);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    
+    // iPhone and 32-bit machines
+    if (sizeof(CGPoint) == sizeof(ccVertex2F)) {
+        if (CC_CONTENT_SCALE_FACTOR() != 1) {
+            memcpy( newPoint, poli, numberOfPoints * sizeof(ccVertex2F));
+            for (NSUInteger i=0; i<numberOfPoints; i++) {
+                newPoint[i] = (ccVertex2F) { poli[i].x * CC_CONTENT_SCALE_FACTOR(), poli[i].y * CC_CONTENT_SCALE_FACTOR() };
+            }
+            glVertexPointer(2, GL_FLOAT, 0, newPoint);
+        } else {
+            glVertexPointer(2, GL_FLOAT, 0, poli);
+        }
+    } else {
+        // 64-bit machines (Mac)
+        for (NSUInteger i=0; i<numberOfPoints; i++) {
+            newPoint[i] = (ccVertex2F) { poli[i].x, poli[i].y };
+        }
+        glVertexPointer(2, GL_FLOAT, 0, newPoint);
+    }
+    
+    if (closePolygon) {
+        glDrawArrays(GL_TRIANGLE_FAN, 0, numberOfPoints);
+    } else {
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, numberOfPoints);
+    }
+    
+    // restore default state
+    glEnableClientState(GL_COLOR_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnable(GL_TEXTURE_2D);
+}
+
+
 void ccDrawCircle( CGPoint center, float r, float a, NSUInteger segs, BOOL drawLineToCenter)
 {
 	int additionalSegment = 1;
