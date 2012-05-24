@@ -18,7 +18,6 @@
  @synthesize delegate;
  @synthesize regenerationSpeed;
  @synthesize drainSpeed;
- @synthesize rect;
  @synthesize drain;
 
 -(id)init
@@ -30,12 +29,11 @@
     return self;
 }
 
-+(EnergyBar*)createWithDrainSpeed:(CGFloat)ds regenerationSpeed:(CGFloat)rs rect:(CGRect)r
++(EnergyBar*)createWithDrainSpeed:(CGFloat)ds regenerationSpeed:(CGFloat)rs
 {
     EnergyBar *eb = [[[EnergyBar alloc] init] autorelease];
     eb.regenerationSpeed = rs;
     eb.drainSpeed = ds;
-    eb.rect = r;
     return eb;
 }
 
@@ -69,39 +67,27 @@
     drain = NO;
 }
 
--(void)drawInLayer:(CCLayer *)l
+-(void)draw
 {
+    CGFloat x = self.position.x - self.contentSize.width/2;
+    CGFloat y = self.position.y - self.contentSize.height/2;
+    CGFloat w = self.contentSize.width;
+    CGFloat h = self.contentSize.height;
+    CGFloat k = value;
+    
     glEnable(GL_LINE_SMOOTH);
-    glColor4ub(255, 0, 255, 255);
     glLineWidth(2);
     
-    CGFloat x = rect.origin.x;
-    CGFloat y = rect.origin.y;
-    CGFloat w = rect.size.width;
-    CGFloat h = rect.size.height;
-    CGFloat k = self.value;
+    glColor4ub(255, 0, 255, 255);
+    CGPoint poly1[]= {ccp(x,y), ccp(x+w*k,y), ccp(x+w*k,y+h), ccp(x,y+h)};
+    ccFillPoly(poly1, 4, YES);
     
-    [self drawFilledRectWith:ccp(x,y) and:ccp(x+w*k,y+h)];
-    
-    glColor4ub(0, 0, 0, 255);
-    CGPoint vertices2[] = {ccp(x,y), ccp(x+w,y), ccp(x+w,y+h), ccp(x,y+h)};
-    ccDrawPoly(vertices2, 4, YES);
+    glColor4ub(255, 255, 255, 255);
+	CGPoint poly[] = {ccp(x,y), ccp(x+w,y),   ccp(x+w,y+h),   ccp(x,y+h)};
+    ccDrawPoly(poly, 4, YES);
 }
 
--(void)drawFilledRectWith:(CGPoint)v1 and:(CGPoint)v2
-{
-	CGPoint poli[]={v1,CGPointMake(v1.x,v2.y),v2,CGPointMake(v2.x,v1.y)};
-    
-    CC_DISABLE_DEFAULT_GL_STATES()
-    
-	glVertexPointer(2, GL_FLOAT, 0, poli);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    
-    CC_ENABLE_DEFAULT_GL_STATES()
-}
-
-
-- (void)dealloc
+-(void)dealloc
 {
     [super dealloc];
 }

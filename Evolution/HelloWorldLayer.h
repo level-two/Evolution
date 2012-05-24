@@ -7,8 +7,9 @@
 //
 
 #import "cocos2d.h"
+#import "EnergyBar.h"
 
-@interface HelloWorldLayer : CCLayer
+@interface HelloWorldLayer : CCLayer <EnergyBarDelegate>
 {
 }
 

@@ -11,6 +11,7 @@
 #import "Box2D/Box2D.h"
 #import "Cocos_Box2D_conversion.h"
 #import "Constants.h"
+#import "EnergyBar.h"
 
 static b2PolygonShape *bugaPoly;
 static b2PolygonShape *bacPoly;
@@ -41,6 +42,8 @@ static b2PolygonShape *bacPoly;
  @property (nonatomic, assign) CGSize winSize, worldSize;
  @property (nonatomic, assign) CGRect worldBounds;
  @property (nonatomic, retain) NSDate *prevTapTime;
+
+ @property (nonatomic, retain) EnergyBar *energyBar;
 
 - (void)setup;
 - (void)initBacilla;
@@ -80,6 +83,8 @@ static b2PolygonShape *bacPoly;
 
  @synthesize prevTapTime;
 
+ @synthesize energyBar;
+
 //--------------------------------------------------------------
 
 -(id) init
@@ -100,6 +105,7 @@ static b2PolygonShape *bacPoly;
     [self initBackground];    
     [self initBacilla];
     [self initBugafish];
+    [self initEnergyBar];
     
     self.winSize = [[CCDirector sharedDirector] winSize];
     self.worldSize = background.textureRect.size; // will be changed in future
@@ -108,6 +114,7 @@ static b2PolygonShape *bacPoly;
     [self addBackground];
     [self addBacilla];
     [self addBugafish];
+    [self addEnergyBar];
     
     self.prevTapTime = [NSDate dateWithTimeIntervalSince1970:0];
     
@@ -174,6 +181,12 @@ static b2PolygonShape *bacPoly;
     bugaPoly->Set(bp, nb);
 }
 
+- (void)initEnergyBar
+{
+    self.energyBar = [EnergyBar createWithDrainSpeed:0.3 regenerationSpeed:0.1];
+    energyBar.delegate = self;
+}
+
 - (void)initStar
 {
     
@@ -231,6 +244,14 @@ static b2PolygonShape *bacPoly;
     
     [bugafishes addObject:bugafish];
     [self bugafishUpdate:bugafish];
+}
+
+- (void)addEnergyBar
+{
+    energyBar.position = ccp(100, 100);
+    energyBar.contentSize = CGSizeMake(50, 50);
+    [self addChild:energyBar];
+    [energyBar startDrain];
 }
 
 - (void)addStar
@@ -562,6 +583,8 @@ static b2PolygonShape *bacPoly;
 
 - (void)update:(ccTime)dt
 {
+    [energyBar update:dt];
+    
     for (CCSprite* buga in bugafishes)
     {
         if (buga.tag == bugaUntouchableTag) continue;
@@ -620,6 +643,19 @@ static b2PolygonShape *bacPoly;
     return (manifold.pointCount > 0);
 }
 
+//--------------------------------------------------------------
+// energyBar delegate
+
+- (void)energyBarZeroed:(EnergyBar *)eb
+{
+    if (eb == energyBar)
+    {
+        bacDoublespeeded = NO;
+    }
+}
+
+//--------------------------------------------------------------
+
 - (void) dealloc
 {
     delete(bugaPoly);
@@ -641,12 +677,14 @@ static b2PolygonShape *bacPoly;
     
     self.prevTapTime = nil;
     
+    self.energyBar = nil;
+    
 	[super dealloc];
 }
 
-// DEBUG STUFF
 //- (void)draw
 //{
+// //DEBUG STUFF
 //    CGPoint *bacV, *bugaV;
 //    
 //    int bacVCnt = bacPoly->GetVertexCount();
