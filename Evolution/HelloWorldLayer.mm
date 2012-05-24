@@ -583,6 +583,8 @@ static b2PolygonShape *bacPoly;
 
 - (void)update:(ccTime)dt
 {
+//    CGPoint p = self.position;
+    energyBar.position = ccpNeg(self.positionInPixels);
     [energyBar update:dt];
     
     for (CCSprite* buga in bugafishes)
