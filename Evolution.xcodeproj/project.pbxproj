@@ -58,7 +58,7 @@
 		DF97BE7F1530CFA800B0A6E4 /* Sprites in Resources */ = {isa = PBXBuildFile; fileRef = DF97BE7E1530CFA800B0A6E4 /* Sprites */; };
 		DF9D96B0151BC6E200134160 /* CreatureSpermik.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9D96AF151BC6E100134160 /* CreatureSpermik.m */; };
 		DFA750B8150BE213007206ED /* BackgroundLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA750B7150BE213007206ED /* BackgroundLayer.m */; };
-		DFA750BC150BE57E007206ED /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA750BB150BE57E007206ED /* GameScene.m */; };
+		DFA750BC150BE57E007206ED /* GameScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFA750BB150BE57E007206ED /* GameScene.mm */; };
 		DFC2B43A156D8166006CFDEC /* EnergyBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DFC2B439156D8165006CFDEC /* EnergyBar.m */; };
 		DFE41CA314F996540036ACC7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA214F996540036ACC7 /* QuartzCore.framework */; };
 		DFE41CA514F996540036ACC7 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA414F996540036ACC7 /* OpenGLES.framework */; };
@@ -279,7 +279,7 @@
 		DFA750B6150BE213007206ED /* BackgroundLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundLayer.h; sourceTree = "<group>"; };
 		DFA750B7150BE213007206ED /* BackgroundLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundLayer.m; sourceTree = "<group>"; };
 		DFA750BA150BE57E007206ED /* GameScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
-		DFA750BB150BE57E007206ED /* GameScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
+		DFA750BB150BE57E007206ED /* GameScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameScene.mm; sourceTree = "<group>"; };
 		DFB10AF8156856CE00120C69 /* Cocos_Box2D_conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cocos_Box2D_conversion.h; sourceTree = "<group>"; };
 		DFB10AFA1568571A00120C69 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		DFC2B438156D8165006CFDEC /* EnergyBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnergyBar.h; sourceTree = "<group>"; };
@@ -739,7 +739,7 @@
 				DFE41E0714F9965B0036ACC7 /* RootViewController.h */,
 				DFE41E0814F9965B0036ACC7 /* RootViewController.m */,
 				DFA750BA150BE57E007206ED /* GameScene.h */,
-				DFA750BB150BE57E007206ED /* GameScene.m */,
+				DFA750BB150BE57E007206ED /* GameScene.mm */,
 				DFE41E0A14F9965B0036ACC7 /* HelloWorldLayer.h */,
 				DFE41E0B14F9965B0036ACC7 /* HelloWorldLayer.mm */,
 				DFC2B438156D8165006CFDEC /* EnergyBar.h */,
@@ -1259,7 +1259,7 @@
 				DFE41E0914F9965B0036ACC7 /* RootViewController.m in Sources */,
 				DFE41E0C14F9965B0036ACC7 /* HelloWorldLayer.mm in Sources */,
 				DFA750B8150BE213007206ED /* BackgroundLayer.m in Sources */,
-				DFA750BC150BE57E007206ED /* GameScene.m in Sources */,
+				DFA750BC150BE57E007206ED /* GameScene.mm in Sources */,
 				DF9D96B0151BC6E200134160 /* CreatureSpermik.m in Sources */,
 				DF97BE7D1530CF1700B0A6E4 /* AnimationLoader.m in Sources */,
 				DF612E991567DF9E00547397 /* b2BroadPhase.cpp in Sources */,

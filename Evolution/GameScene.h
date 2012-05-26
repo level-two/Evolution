@@ -8,6 +8,8 @@
 
 #import "cocos2d.h"
 
-@interface GameScene : CCScene
-+(CCScene *) scene;
+@class HelloWorldLayer;
+
+@interface GameScene : CCScene <CCTargetedTouchDelegate>
+ +(GameScene *) scene;
 @end
