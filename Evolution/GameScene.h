@@ -7,9 +7,10 @@
 //
 
 #import "cocos2d.h"
+#import "EnergyBar.h"
 
 @class HelloWorldLayer;
 
-@interface GameScene : CCScene <CCTargetedTouchDelegate>
+@interface GameScene : CCScene <CCTargetedTouchDelegate, EnergyBarDelegate>
  +(GameScene *) scene;
 @end

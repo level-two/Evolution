@@ -8,6 +8,7 @@
 
 #import "GameScene.h"
 #import "HelloWorldLayer.h"
+#import "StatusLayer.h"
 #import "AnimationLoader.h"
 #import "Box2D/Box2D.h"
 #import "Cocos_Box2D_conversion.h"
@@ -19,6 +20,7 @@ static b2PolygonShape *bacPoly;
 
 @interface GameScene ()
  @property (nonatomic, retain) HelloWorldLayer *helloWorldLayer;
+ @property (nonatomic, retain) StatusLayer *statusLayer;
 
  @property (nonatomic, retain) CCSprite *bacilla;
  @property (nonatomic, retain) CCSprite *background;
@@ -65,6 +67,7 @@ static b2PolygonShape *bacPoly;
 
 @implementation GameScene
  @synthesize helloWorldLayer;
+ @synthesize statusLayer;
 
  @synthesize bacilla;
  @synthesize background;
@@ -114,8 +117,7 @@ static b2PolygonShape *bacPoly;
 {
     [[AnimationLoader sharedInstance] loadAnimationsFromDir:@"Sprites/" recursive:YES];
     
-	self.helloWorldLayer = [HelloWorldLayer node];
-	[self addChild:helloWorldLayer];
+    [self initLayers];
     
     [self initBackground];    
     [self initBacilla];
@@ -142,6 +144,15 @@ static b2PolygonShape *bacPoly;
 }
 
 //--------------------------------------------------------------
+
+- (void)initLayers
+{
+	self.helloWorldLayer = [HelloWorldLayer node];
+	[self addChild:helloWorldLayer];
+    
+	self.statusLayer = [StatusLayer node];
+	[self addChild:statusLayer];
+}
 
 - (void)initBacilla
 {
@@ -199,8 +210,8 @@ static b2PolygonShape *bacPoly;
 
 - (void)initEnergyBar
 {
-//    self.energyBar = [EnergyBar createWithDrainSpeed:0.3 regenerationSpeed:0.1];
-//    energyBar.delegate = self;
+    self.energyBar = [EnergyBar createWithDrainSpeed:0.3 regenerationSpeed:0.1];
+    energyBar.delegate = self;
 }
 
 - (void)initStar
@@ -264,10 +275,10 @@ static b2PolygonShape *bacPoly;
 
 - (void)addEnergyBar
 {
-    energyBar.position = ccp(100, 100);
-    energyBar.contentSize = CGSizeMake(50, 50);
-//    [self addChild:energyBar];
-//    [energyBar startDrain];
+    energyBar.position = ccp(60, 160);
+    energyBar.contentSize = CGSizeMake(50, 10);
+    [statusLayer addChild:energyBar];
+    [energyBar startDrain];
 }
 
 - (void)addStar
@@ -599,8 +610,6 @@ static b2PolygonShape *bacPoly;
 
 - (void)update:(ccTime)dt
 {
-    //    CGPoint p = self.position;
-    energyBar.position = ccpNeg(self.positionInPixels);
     [energyBar update:dt];
     
     for (CCSprite* buga in bugafishes)
@@ -698,6 +707,7 @@ static b2PolygonShape *bacPoly;
     self.energyBar = nil;
     
     self.helloWorldLayer = nil;
+    self.statusLayer = nil;
     
 	[super dealloc];
 }

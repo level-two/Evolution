@@ -60,6 +60,7 @@
 		DFA750B8150BE213007206ED /* BackgroundLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA750B7150BE213007206ED /* BackgroundLayer.m */; };
 		DFA750BC150BE57E007206ED /* GameScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFA750BB150BE57E007206ED /* GameScene.mm */; };
 		DFC2B43A156D8166006CFDEC /* EnergyBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DFC2B439156D8165006CFDEC /* EnergyBar.m */; };
+		DFC618071570C24C00B4E800 /* StatusLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFC618061570C24C00B4E800 /* StatusLayer.mm */; };
 		DFE41CA314F996540036ACC7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA214F996540036ACC7 /* QuartzCore.framework */; };
 		DFE41CA514F996540036ACC7 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA414F996540036ACC7 /* OpenGLES.framework */; };
 		DFE41CA714F996540036ACC7 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA614F996540036ACC7 /* OpenAL.framework */; };
@@ -284,6 +285,8 @@
 		DFB10AFA1568571A00120C69 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		DFC2B438156D8165006CFDEC /* EnergyBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnergyBar.h; sourceTree = "<group>"; };
 		DFC2B439156D8165006CFDEC /* EnergyBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnergyBar.m; sourceTree = "<group>"; };
+		DFC618051570C24C00B4E800 /* StatusLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusLayer.h; sourceTree = "<group>"; };
+		DFC618061570C24C00B4E800 /* StatusLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StatusLayer.mm; sourceTree = "<group>"; };
 		DFE41C9E14F996540036ACC7 /* Evolution.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Evolution.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFE41CA214F996540036ACC7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DFE41CA414F996540036ACC7 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -742,6 +745,8 @@
 				DFA750BB150BE57E007206ED /* GameScene.mm */,
 				DFE41E0A14F9965B0036ACC7 /* HelloWorldLayer.h */,
 				DFE41E0B14F9965B0036ACC7 /* HelloWorldLayer.mm */,
+				DFC618051570C24C00B4E800 /* StatusLayer.h */,
+				DFC618061570C24C00B4E800 /* StatusLayer.mm */,
 				DFC2B438156D8165006CFDEC /* EnergyBar.h */,
 				DFC2B439156D8165006CFDEC /* EnergyBar.m */,
 				DF97BE7B1530CF1700B0A6E4 /* AnimationLoader.h */,
@@ -1308,6 +1313,7 @@
 				DF612EC41567DF9E00547397 /* b2WheelJoint.cpp in Sources */,
 				DF612EC51567DF9E00547397 /* b2Rope.cpp in Sources */,
 				DFC2B43A156D8166006CFDEC /* EnergyBar.m in Sources */,
+				DFC618071570C24C00B4E800 /* StatusLayer.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

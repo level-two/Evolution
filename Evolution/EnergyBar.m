@@ -20,14 +20,6 @@
  @synthesize drainSpeed;
  @synthesize drain;
 
--(id)init
-{
-    if (self = [super init])
-    {
-        
-    }
-    return self;
-}
 
 +(EnergyBar*)createWithDrainSpeed:(CGFloat)ds regenerationSpeed:(CGFloat)rs
 {
@@ -35,6 +27,14 @@
     eb.regenerationSpeed = rs;
     eb.drainSpeed = ds;
     return eb;
+}
+
+-(id)init
+{
+    if (self = [super init])
+    {
+    }
+    return self;
 }
 
 -(void)update:(ccTime)dt
@@ -76,7 +76,7 @@
     CGFloat k = value;
     
     glEnable(GL_LINE_SMOOTH);
-    glLineWidth(2);
+//    glLineWidth(2);
     
     glColor4ub(255, 0, 255, 255);
     CGPoint poly1[]= {ccp(x,y), ccp(x+w*k,y), ccp(x+w*k,y+h), ccp(x,y+h)};
