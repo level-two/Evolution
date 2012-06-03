@@ -43,6 +43,7 @@ static b2PolygonShape *bacPoly;
  @property (nonatomic, assign) BOOL bacDoublespeeded;
  @property (nonatomic, assign) BOOL denyDoubleSpeed;
  @property (nonatomic, assign) BOOL canMakeStrongHit; // indicates when hero accelerated enoguh to make strong hit
+ @property (nonatomic, assign) CGPoint lastTapPoint;
 
  @property (nonatomic, assign) CGSize winSize, worldSize;
  @property (nonatomic, assign) CGRect worldBounds;
@@ -62,6 +63,10 @@ static b2PolygonShape *bacPoly;
 
  - (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2;
  - (BOOL)isHeroCanBeSeenBy:(CCSprite*)evilCreature;
+
+ - (void)denyDoubleSpeedForSomeTime;
+
+ - (void)bacMoveTo:(CGPoint)dest;
 @end
 
 
@@ -84,6 +89,7 @@ static b2PolygonShape *bacPoly;
  @synthesize bacDoublespeeded;
  @synthesize denyDoubleSpeed;
  @synthesize canMakeStrongHit;
+ @synthesize lastTapPoint;
 
  @synthesize maxFishes, maxStars, maxPills;
  @synthesize winSize, worldSize;
@@ -210,7 +216,7 @@ static b2PolygonShape *bacPoly;
 
 - (void)initEnergyBar
 {
-    self.energyBar = [EnergyBar createWithDrainSpeed:0.3 regenerationSpeed:0.1];
+    self.energyBar = [EnergyBar createWithDrainSpeed:0.5 regenerationSpeed:0.1];
     energyBar.delegate = self;
 }
 
@@ -275,10 +281,9 @@ static b2PolygonShape *bacPoly;
 
 - (void)addEnergyBar
 {
-    energyBar.position = ccp(60, 160);
+    energyBar.position = ccp(60, 20);
     energyBar.contentSize = CGSizeMake(50, 10);
     [statusLayer addChild:energyBar];
-    [energyBar startDrain];
 }
 
 - (void)addStar
@@ -491,7 +496,7 @@ static b2PolygonShape *bacPoly;
 }
 
 
-- (void)heroDapFromBuga:(CCSprite*)buga
+- (void)bacDapFromBuga:(CCSprite*)buga
 {
     CGFloat angle = bacilla.rotation;
     if (bacilla.scaleX < 0) angle += 180;
@@ -506,6 +511,9 @@ static b2PolygonShape *bacPoly;
     
     [bacilla stopActionByTag:bacMoveActionTag];
     [bacilla runAction:easedMove];
+    
+    bacDoublespeeded = NO;
+    [energyBar stopDrain];
 }
 //--------------------------------------------------------------
 
@@ -528,11 +536,34 @@ static b2PolygonShape *bacPoly;
     CGPoint location = [touch locationInView:[touch view]];
     location = [[CCDirector sharedDirector] convertToGL:location];
     
-    CGFloat bScrX = bacilla.position.x + helloWorldLayer.position.x;
-    CGFloat bScrY = bacilla.position.y + helloWorldLayer.position.y;
+    NSTimeInterval ti = -[prevTapTime timeIntervalSinceNow];
+    if (ti > 0.2 || denyDoubleSpeed)
+    {
+        bacDoublespeeded = NO;
+        [energyBar stopDrain];
+    }
+    else
+    {
+        // if tap period is small - move hero with double speed
+        bacDoublespeeded = YES;
+        [self denyDoubleSpeedForSomeTime];
+        [energyBar startDrain];
+    }
     
-    CGFloat dx = location.x - bScrX;
-    CGFloat dy = location.y - bScrY;
+    lastTapPoint = CGPointMake(location.x - helloWorldLayer.position.x,
+                               location.y - helloWorldLayer.position.y);
+    [self bacMoveTo:lastTapPoint];
+}
+
+//--------------------------------------------------------------
+
+- (void)bacMoveTo:(CGPoint)dest
+{
+    CGFloat bx = bacilla.position.x;
+    CGFloat by = bacilla.position.y;
+    
+    CGFloat dx = dest.x - bx;
+    CGFloat dy = dest.y - by;
     
     CGFloat sgnX = dx<0 ? -1 : 1;
     CGFloat angle = atan2f( -dy*sgnX, fabs(dx)) *180/M_PI;
@@ -546,22 +577,18 @@ static b2PolygonShape *bacPoly;
     bacilla.scaleX = sgnX; // change direction if needed
     
     
-    CGFloat dist = ccpDistance(location, ccp(bScrX, bScrY));
+    CGFloat dist = ccpDistance(dest, ccp(bx, by));
     CGFloat moveDuration = dist / BacVelocity;
-    NSTimeInterval ti = -[prevTapTime timeIntervalSinceNow];
-    if (ti > 0.2 || denyDoubleSpeed)
+    
+    if (!bacDoublespeeded)
     {
         bacillaAnimation.delay = 0.1;
-        bacDoublespeeded = NO;
     }
     else
     {
         // if tap period is small - move hero with double speed
         moveDuration /= 2;
         bacillaAnimation.delay = 0.08;
-        bacDoublespeeded = YES;
-        denyDoubleSpeed = YES;
-        [self performSelector:@selector(allowDoubleSpeed) withObject:nil afterDelay:DoubleSpeedDenyTime];
     }
     
     self.prevTapTime = [NSDate date];
@@ -572,6 +599,7 @@ static b2PolygonShape *bacPoly;
                       bacillaAnimation.delay = 0.2;
                       bacDoublespeeded = NO;
                       canMakeStrongHit = NO; //reset when stopped
+                      [energyBar stopDrain];
                   }];
     
     CCSequence *sequence;
@@ -601,11 +629,6 @@ static b2PolygonShape *bacPoly;
     [bacilla runAction:easedMove];
 }
 
-- (void)allowDoubleSpeed
-{
-    denyDoubleSpeed = NO;
-}
-
 //--------------------------------------------------------------
 
 - (void)update:(ccTime)dt
@@ -630,7 +653,7 @@ static b2PolygonShape *bacPoly;
                 
                 [self dashBuga:buga]; // debug
             }
-            [self heroDapFromBuga:buga];
+            [self bacDapFromBuga:buga];
         }
     }
 }
@@ -671,6 +694,19 @@ static b2PolygonShape *bacPoly;
 }
 
 //--------------------------------------------------------------
+
+- (void)denyDoubleSpeedForSomeTime
+{
+    denyDoubleSpeed = YES;
+    [self performSelector:@selector(allowDoubleSpeed) withObject:nil afterDelay:DoubleSpeedDenyTime];
+}
+
+- (void)allowDoubleSpeed
+{
+    denyDoubleSpeed = NO;
+}
+
+//--------------------------------------------------------------
 // energyBar delegate
 
 - (void)energyBarZeroed:(EnergyBar *)eb
@@ -678,6 +714,8 @@ static b2PolygonShape *bacPoly;
     if (eb == energyBar)
     {
         bacDoublespeeded = NO;
+        [self denyDoubleSpeedForSomeTime];
+        [self bacMoveTo:lastTapPoint];
     }
 }
 

@@ -33,6 +33,7 @@
 {
     if (self = [super init])
     {
+        value = 1.0;
     }
     return self;
 }
