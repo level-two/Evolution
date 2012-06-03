@@ -13,6 +13,8 @@
 #define bacTag 1
 #define bugaTouchableTag 2
 #define bugaUntouchableTag 3
+#define greenPillTag 4
+#define redPillTag 5
 
 // motion constants
 #define DoubleSpeedDenyTime 1.5
@@ -26,6 +28,8 @@
 #define BugaWeakHitLongDist 100
 #define BugaStrongHitShortDist 150
 #define BugaStrongHitLongDist 200
+
+#define GreenPillFallingSpeed 40 // px/s
 
 #define BugaRotationSpeed 360/1.0 // degrees/sec
 

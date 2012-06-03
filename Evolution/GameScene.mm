@@ -17,6 +17,7 @@
 
 static b2PolygonShape *bugaPoly;
 static b2PolygonShape *bacPoly;
+static b2PolygonShape *pillPoly;
 
 @interface GameScene ()
  @property (nonatomic, retain) HelloWorldLayer *helloWorldLayer;
@@ -30,6 +31,9 @@ static b2PolygonShape *bacPoly;
 
  @property (nonatomic, retain) CCAnimation *bugafishAnimation;
  @property (nonatomic, retain) CCAnimate *bugafishMoveAction;
+
+ @property (nonatomic, retain) CCAnimation *greenPillAnimation;
+ @property (nonatomic, retain) CCAnimate *greenPillAnimAction;
 
  @property (nonatomic, retain) NSMutableArray *bugafishes;
  @property (nonatomic, retain) NSMutableArray *stars;
@@ -67,6 +71,11 @@ static b2PolygonShape *bacPoly;
  - (void)denyDoubleSpeedForSomeTime;
 
  - (void)bacMoveTo:(CGPoint)dest;
+
+ - (void)initLayers;
+ - (void)initEnergyBar;
+ - (void)addEnergyBar;
+ - (void)registerWithTouchDispatcher;
 @end
 
 
@@ -85,6 +94,9 @@ static b2PolygonShape *bacPoly;
 
  @synthesize bugafishes, stars;
  @synthesize redPills, greenPills;
+
+ @synthesize greenPillAnimation;
+ @synthesize greenPillAnimAction;
 
  @synthesize bacDoublespeeded;
  @synthesize denyDoubleSpeed;
@@ -129,6 +141,7 @@ static b2PolygonShape *bacPoly;
     [self initBacilla];
     [self initBugafish];
     [self initEnergyBar];
+    [self initGreenPill];
     
     self.winSize = [[CCDirector sharedDirector] winSize];
     self.worldSize = background.textureRect.size; // will be changed in future
@@ -138,6 +151,9 @@ static b2PolygonShape *bacPoly;
     [self addBacilla];
     [self addBugafish];
     [self addEnergyBar];
+    [self addGreenPill];
+    [self addGreenPill];
+    [self addGreenPill];
     
     self.prevTapTime = [NSDate dateWithTimeIntervalSince1970:0];
     
@@ -232,7 +248,24 @@ static b2PolygonShape *bacPoly;
 
 - (void)initGreenPill
 {
+    self.greenPills = [NSMutableArray array];
     
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"GreenPill"];
+    if (bn)
+        [helloWorldLayer addChild:bn z:1];
+    self.greenPillAnimation = [[AnimationLoader sharedInstance] animationWithName:@"GreenPill"];
+    self.greenPillAnimAction = [CCAnimate actionWithAnimation:greenPillAnimation restoreOriginalFrame:NO];
+    
+    int num = 4;
+    b2Vec2 poly[] = {
+        b2Vec2(6.0f / PTM_RATIO, 6.0f / PTM_RATIO),
+        b2Vec2(-6.0f / PTM_RATIO, 6.0f / PTM_RATIO),
+        b2Vec2(-6.0f / PTM_RATIO, -6.0f / PTM_RATIO),
+        b2Vec2(6.0f / PTM_RATIO, -6.0f / PTM_RATIO)
+    };
+    
+    pillPoly = new b2PolygonShape();
+    pillPoly->Set(poly, num);
 }
 
 - (void)initBuka
@@ -298,7 +331,21 @@ static b2PolygonShape *bacPoly;
 
 - (void)addGreenPill
 {
+    CCSprite *greenPill = [[AnimationLoader sharedInstance] spriteWithName:@"GreenPill"];
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"GreenPill"];
+    [bn addChild:greenPill];
+    greenPill.tag = greenPillTag;
     
+    CGFloat x = rand() % (int)worldSize.width;
+    CGFloat y = worldSize.height;
+    greenPill.position = ccp(x,y);
+    
+//    [greenPill runAction:[CCRepeatForever actionWithAction:greenPillAnimAction]];
+    
+    [greenPills addObject:greenPill];
+    
+    CGFloat dt = y/GreenPillFallingSpeed;
+    [greenPill runAction:[CCMoveTo actionWithDuration:dt position:ccp(x,0)]];
 }
 
 - (void)addBuka
@@ -631,6 +678,17 @@ static b2PolygonShape *bacPoly;
 
 //--------------------------------------------------------------
 
+- (void)eatGreenPill:(CCSprite*)pill
+{
+    CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"GreenPill"];
+    [bn removeChild:pill cleanup:YES];
+    
+    [self performSelector:@selector(addGreenPill) withObject:nil afterDelay:0.1];
+    NSLog(@"Increase score, show bonus, make sound");
+}
+
+//--------------------------------------------------------------
+
 - (void)update:(ccTime)dt
 {
     [energyBar update:dt];
@@ -656,6 +714,21 @@ static b2PolygonShape *bacPoly;
             [self bacDapFromBuga:buga];
         }
     }
+    
+    NSMutableArray *greenPillsToDelete = [NSMutableArray array];
+    
+    for (CCSprite *pill in greenPills)
+    {
+        if ([self collisionDetection:pill with:bacilla])
+        {
+            // Yummie! )))
+            [self eatGreenPill:pill];
+            [greenPillsToDelete addObject:pill];
+        }
+    }
+    
+    if (greenPillsToDelete.count)
+        [greenPills removeObjectsInArray:greenPillsToDelete];
 }
 
 //--------------------------------------------------------------
@@ -687,6 +760,8 @@ static b2PolygonShape *bacPoly;
     if (s2.tag == bacTag) poly2 = bacPoly;
     if (s1.tag == bugaTouchableTag) poly1 = bugaPoly;
     if (s2.tag == bugaTouchableTag) poly2 = bugaPoly;
+    if (s1.tag == redPillTag || s1.tag == greenPillTag) poly1 = pillPoly;
+    if (s2.tag == redPillTag || s2.tag == greenPillTag) poly2 = pillPoly;
     
     b2Manifold manifold;
     b2CollidePolygons(&manifold, poly1, transform1, poly2, transform2);
@@ -723,8 +798,9 @@ static b2PolygonShape *bacPoly;
 
 - (void) dealloc
 {
-    delete(bugaPoly);
-    delete(bacPoly);
+    delete bugaPoly;
+    delete bacPoly;
+    delete pillPoly;
     
     [[CCSpriteFrameCache sharedSpriteFrameCache] removeUnusedSpriteFrames];
 	self.bacilla = nil;
@@ -739,6 +815,9 @@ static b2PolygonShape *bacPoly;
     self.stars = nil;
     self.redPills = nil;
     self.greenPills = nil;
+    
+    self.greenPillAnimation = nil;
+    self.greenPillAnimAction = nil;
     
     self.prevTapTime = nil;
     
