@@ -69,8 +69,8 @@
 
 -(void)draw
 {
-    CGFloat x = self.position.x - self.contentSize.width/2;
-    CGFloat y = self.position.y - self.contentSize.height/2;
+    CGFloat x = - self.contentSize.width/2;
+    CGFloat y = - self.contentSize.height/2;
     CGFloat w = self.contentSize.width;
     CGFloat h = self.contentSize.height;
     CGFloat k = value;
