@@ -57,6 +57,7 @@
 		DF97BE7D1530CF1700B0A6E4 /* AnimationLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = DF97BE7C1530CF1700B0A6E4 /* AnimationLoader.m */; };
 		DF97BE7F1530CFA800B0A6E4 /* Sprites in Resources */ = {isa = PBXBuildFile; fileRef = DF97BE7E1530CFA800B0A6E4 /* Sprites */; };
 		DF9D96B0151BC6E200134160 /* CreatureSpermik.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9D96AF151BC6E100134160 /* CreatureSpermik.m */; };
+		DFA150A9157CCDD000D323E0 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = DFA150A8157CCDD000D323E0 /* TODO */; };
 		DFA750B8150BE213007206ED /* BackgroundLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA750B7150BE213007206ED /* BackgroundLayer.m */; };
 		DFA750BC150BE57E007206ED /* GameScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFA750BB150BE57E007206ED /* GameScene.mm */; };
 		DFC2B43A156D8166006CFDEC /* EnergyBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DFC2B439156D8165006CFDEC /* EnergyBar.m */; };
@@ -277,6 +278,7 @@
 		DF97BE7E1530CFA800B0A6E4 /* Sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Sprites; path = Resources/Sprites; sourceTree = "<group>"; };
 		DF9D96AE151BC6E100134160 /* CreatureSpermik.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreatureSpermik.h; sourceTree = "<group>"; };
 		DF9D96AF151BC6E100134160 /* CreatureSpermik.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreatureSpermik.m; sourceTree = "<group>"; };
+		DFA150A8157CCDD000D323E0 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = SOURCE_ROOT; };
 		DFA750B6150BE213007206ED /* BackgroundLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundLayer.h; sourceTree = "<group>"; };
 		DFA750B7150BE213007206ED /* BackgroundLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundLayer.m; sourceTree = "<group>"; };
 		DFA750BA150BE57E007206ED /* GameScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
@@ -703,6 +705,7 @@
 		DFE41C9314F996530036ACC7 = {
 			isa = PBXGroup;
 			children = (
+				DFA150A8157CCDD000D323E0 /* TODO */,
 				DFE41CB214F996540036ACC7 /* Evolution */,
 				DFE41CA114F996540036ACC7 /* Frameworks */,
 				DFE41C9F14F996540036ACC7 /* Products */,
@@ -1155,6 +1158,7 @@
 				DF97BE7F1530CFA800B0A6E4 /* Sprites in Resources */,
 				DF612E971567DF9E00547397 /* Box2DConfig.cmake in Resources */,
 				DF612E981567DF9E00547397 /* CMakeLists.txt in Resources */,
+				DFA150A9157CCDD000D323E0 /* TODO in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

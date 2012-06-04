@@ -1,0 +1,2 @@
+- Move all polygon and collision detection routines to separate cpp file
+- May be  move creatures to separate classes
