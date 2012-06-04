@@ -756,17 +756,28 @@ static b2PolygonShape *pillPoly;
     
     b2PolygonShape *poly1 = NULL;
     b2PolygonShape *poly2 = NULL;
-    if (s1.tag == bacTag) poly1 = bacPoly;
-    if (s2.tag == bacTag) poly2 = bacPoly;
-    if (s1.tag == bugaTouchableTag) poly1 = bugaPoly;
-    if (s2.tag == bugaTouchableTag) poly2 = bugaPoly;
-    if (s1.tag == redPillTag || s1.tag == greenPillTag) poly1 = pillPoly;
-    if (s2.tag == redPillTag || s2.tag == greenPillTag) poly2 = pillPoly;
+    
+    poly1 = [self getPolyForTag:s1.tag];
+    poly2 = [self getPolyForTag:s2.tag];
     
     b2Manifold manifold;
     b2CollidePolygons(&manifold, poly1, transform1, poly2, transform2);
     return (manifold.pointCount > 0);
 }
+
+- (b2PolygonShape*)getPolyForTag:(NSInteger)tag
+{
+    b2PolygonShape *poly = NULL;
+    if (tag == bacTag) poly = bacPoly;
+    if (tag == bugaTouchableTag) poly = bugaPoly;
+    if (tag == redPillTag || tag == greenPillTag) poly = pillPoly;
+    if (tag == oceanBed1Tag) poly = oceanBedPoly1;
+    if (tag == oceanBed2Tag) poly = oceanBedPoly2;
+    if (tag == oceanBed3Tag) poly = oceanBedPoly3;
+    
+    return poly;
+}
+
 
 //--------------------------------------------------------------
 
