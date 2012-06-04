@@ -15,6 +15,9 @@
 #define bugaUntouchableTag 3
 #define greenPillTag 4
 #define redPillTag 5
+#define oceanBed1Tag 6
+#define oceanBed2Tag 7
+#define oceanBed3Tag 8
 
 // motion constants
 #define DoubleSpeedDenyTime 1.5
@@ -38,5 +41,6 @@
 #define bugaDashedActionTag 100501
 #define bacDappingActionTag 100502
 #define bugaMoveActionTag 100503
+#define pillFallingActionTag 100504
 
 #endif

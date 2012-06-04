@@ -18,6 +18,7 @@
 static b2PolygonShape *bugaPoly;
 static b2PolygonShape *bacPoly;
 static b2PolygonShape *pillPoly;
+static b2PolygonShape *oceanBedPoly1, *oceanBedPoly2, *oceanBedPoly3;
 
 @interface GameScene ()
  @property (nonatomic, retain) HelloWorldLayer *helloWorldLayer;
@@ -59,14 +60,17 @@ static b2PolygonShape *pillPoly;
  - (void)initBacilla;
  - (void)initBackground;
  - (void)initBugafish;
+ - (void)initGreenPill;
  - (void)addBackground;
  - (void)addBacilla;
  - (void)addBugafish;
+ - (void)addGreenPill;
 
  - (void)bugafishUpdate:(CCSprite*)bugafish;
 
  - (BOOL)collisionDetection:(CCSprite*)s1 with:(CCSprite*)s2;
  - (BOOL)isHeroCanBeSeenBy:(CCSprite*)evilCreature;
+ - (b2PolygonShape*)getPolyForTag:(NSInteger)tag;
 
  - (void)denyDoubleSpeedForSomeTime;
 
@@ -203,6 +207,41 @@ static b2PolygonShape *pillPoly;
 - (void)initBackground
 {
     self.background = [CCSprite spriteWithFile:@"Sprites/ocean.png"];
+    
+    
+    //row 1, col 1
+    int num1 = 4;
+    b2Vec2 verts1[] = {
+        b2Vec2(167.3f / PTM_RATIO, -365.0f / PTM_RATIO),
+        b2Vec2(-167.7f / PTM_RATIO, -310.0f / PTM_RATIO),
+        b2Vec2(-167.7f / PTM_RATIO, -379.0f / PTM_RATIO),
+        b2Vec2(167.3f / PTM_RATIO, -380.0f / PTM_RATIO)
+    };
+    oceanBedPoly1 = new b2PolygonShape();
+    oceanBedPoly1->Set(verts1, num1);
+    
+    //row 1, col 2
+    int num2 = 4;
+    b2Vec2 verts2[] = {
+        b2Vec2(169.0f / PTM_RATIO, -338.0f / PTM_RATIO),
+        b2Vec2(-167.0f / PTM_RATIO, -364.0f / PTM_RATIO),
+        b2Vec2(-166.0f / PTM_RATIO, -379.0f / PTM_RATIO),
+        b2Vec2(167.0f / PTM_RATIO, -379.0f / PTM_RATIO)
+    };
+    oceanBedPoly2 = new b2PolygonShape();
+    oceanBedPoly2->Set(verts2, num2);
+    
+    //row 1, col 3
+    int num3 = 5;
+    b2Vec2 verts3[] = {
+        b2Vec2(168.7f / PTM_RATIO, -334.0f / PTM_RATIO),
+        b2Vec2(-37.3f / PTM_RATIO, -287.0f / PTM_RATIO),
+        b2Vec2(-168.3f / PTM_RATIO, -339.0f / PTM_RATIO),
+        b2Vec2(-166.3f / PTM_RATIO, -380.0f / PTM_RATIO),
+        b2Vec2(166.7f / PTM_RATIO, -380.0f / PTM_RATIO)
+    };
+    oceanBedPoly3 = new b2PolygonShape();
+    oceanBedPoly3->Set(verts3, num3);
 }
 
 - (void)initBugafish
@@ -227,7 +266,7 @@ static b2PolygonShape *pillPoly;
     };
     
     bugaPoly = new b2PolygonShape();
-    bugaPoly->Set(bp, nb);
+    bugaPoly->Set(bp, nb);    
 }
 
 - (void)initEnergyBar
@@ -345,7 +384,9 @@ static b2PolygonShape *pillPoly;
     [greenPills addObject:greenPill];
     
     CGFloat dt = y/GreenPillFallingSpeed;
-    [greenPill runAction:[CCMoveTo actionWithDuration:dt position:ccp(x,0)]];
+    CCAction *fall = [CCMoveTo actionWithDuration:dt position:ccp(x,0)];
+    fall.tag = pillFallingActionTag;
+    [greenPill runAction:fall];
 }
 
 - (void)addBuka
@@ -693,6 +734,7 @@ static b2PolygonShape *pillPoly;
 {
     [energyBar update:dt];
     
+    // bugafishes collisions with bacilla
     for (CCSprite* buga in bugafishes)
     {
         if (buga.tag == bugaUntouchableTag) continue;
@@ -715,15 +757,31 @@ static b2PolygonShape *pillPoly;
         }
     }
     
+    // pills collision
     NSMutableArray *greenPillsToDelete = [NSMutableArray array];
     
     for (CCSprite *pill in greenPills)
     {
+        // pill collision with bacilla
         if ([self collisionDetection:pill with:bacilla])
         {
             // Yummie! )))
             [self eatGreenPill:pill];
             [greenPillsToDelete addObject:pill];
+            continue; // this pill will be deleted so it is no need in following checks
+        }
+        
+        // pill collision with ocean bed
+        if([pill getActionByTag:pillFallingActionTag]) // optimization - don't check fallen pills
+        {
+            if ([self collisionWithOceanBed:pill])
+            {
+                [pill stopActionByTag:pillFallingActionTag];
+                CGFloat dy = rand() % (int)pill.position.y;
+                CGFloat dt = dy/GreenPillFallingSpeed;
+                id move = [CCMoveBy actionWithDuration:dt position:ccp(0, -dy)];
+                [pill runAction:move];
+            }
         }
     }
     
@@ -759,6 +817,30 @@ static b2PolygonShape *pillPoly;
     
     poly1 = [self getPolyForTag:s1.tag];
     poly2 = [self getPolyForTag:s2.tag];
+    
+    b2Manifold manifold;
+    b2CollidePolygons(&manifold, poly1, transform1, poly2, transform2);
+    return (manifold.pointCount > 0);
+}
+
+- (BOOL)collisionWithOceanBed:(CCSprite*)s1
+{
+    b2Transform transform1;  b2Vec2 wPos1;
+    b2Transform transform2;  b2Vec2 wPos2;
+    wPos1.Set(SCREEN_TO_WORLD(s1.position.x), SCREEN_TO_WORLD(s1.position.y));
+    wPos2.Set(SCREEN_TO_WORLD(background.position.x), SCREEN_TO_WORLD(background.position.y));
+    CGFloat wAngle1 = COCOS_ROTATION_TO_B2_ANGLE(s1.rotation);
+    CGFloat wAngle2 = COCOS_ROTATION_TO_B2_ANGLE(background.rotation);
+    if (s1.scaleX == -1) wAngle1 -= COCOS_ROTATION_TO_B2_ANGLE(180);
+//    if (s2.scaleX == -1) wAngle2 -= COCOS_ROTATION_TO_B2_ANGLE(180);
+    transform1.Set(wPos1, wAngle1);
+    transform2.Set(wPos2, wAngle2);
+    
+    b2PolygonShape *poly1 = NULL;
+    b2PolygonShape *poly2 = NULL;
+    
+    poly1 = [self getPolyForTag:s1.tag];
+    poly2 = [self getPolyForTag:oceanBed2Tag];
     
     b2Manifold manifold;
     b2CollidePolygons(&manifold, poly1, transform1, poly2, transform2);
@@ -812,6 +894,9 @@ static b2PolygonShape *pillPoly;
     delete bugaPoly;
     delete bacPoly;
     delete pillPoly;
+    delete oceanBedPoly1;
+    delete oceanBedPoly2;
+    delete oceanBedPoly3;
     
     [[CCSpriteFrameCache sharedSpriteFrameCache] removeUnusedSpriteFrames];
 	self.bacilla = nil;
