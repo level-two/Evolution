@@ -18,7 +18,7 @@
 static b2PolygonShape *bugaPoly;
 static b2PolygonShape *bacPoly;
 static b2PolygonShape *pillPoly;
-static b2PolygonShape *oceanBedPoly1, *oceanBedPoly2, *oceanBedPoly3;
+static b2PolygonShape *oceanBedPoly;
 
 @interface GameScene ()
  @property (nonatomic, retain) HelloWorldLayer *helloWorldLayer;
@@ -208,40 +208,19 @@ static b2PolygonShape *oceanBedPoly1, *oceanBedPoly2, *oceanBedPoly3;
 {
     self.background = [CCSprite spriteWithFile:@"Sprites/ocean.png"];
     
-    
-    //row 1, col 1
-    int num1 = 4;
-    b2Vec2 verts1[] = {
-        b2Vec2(167.3f / PTM_RATIO, -365.0f / PTM_RATIO),
-        b2Vec2(-167.7f / PTM_RATIO, -310.0f / PTM_RATIO),
-        b2Vec2(-167.7f / PTM_RATIO, -379.0f / PTM_RATIO),
-        b2Vec2(167.3f / PTM_RATIO, -380.0f / PTM_RATIO)
+    int num = 7;
+    b2Vec2 verts[] = {
+        b2Vec2(510.0f / PTM_RATIO, -319.0f / PTM_RATIO),
+        b2Vec2(285.0f / PTM_RATIO, -257.0f / PTM_RATIO),
+        b2Vec2(45.0f / PTM_RATIO, -358.0f / PTM_RATIO),
+        b2Vec2(-305.0f / PTM_RATIO, -351.0f / PTM_RATIO),
+        b2Vec2(-508.0f / PTM_RATIO, -285.0f / PTM_RATIO),
+        b2Vec2(-510.0f / PTM_RATIO, -381.0f / PTM_RATIO),
+        b2Vec2(509.0f / PTM_RATIO, -380.0f / PTM_RATIO)
     };
-    oceanBedPoly1 = new b2PolygonShape();
-    oceanBedPoly1->Set(verts1, num1);
-    
-    //row 1, col 2
-    int num2 = 4;
-    b2Vec2 verts2[] = {
-        b2Vec2(169.0f / PTM_RATIO, -338.0f / PTM_RATIO),
-        b2Vec2(-167.0f / PTM_RATIO, -364.0f / PTM_RATIO),
-        b2Vec2(-166.0f / PTM_RATIO, -379.0f / PTM_RATIO),
-        b2Vec2(167.0f / PTM_RATIO, -379.0f / PTM_RATIO)
-    };
-    oceanBedPoly2 = new b2PolygonShape();
-    oceanBedPoly2->Set(verts2, num2);
-    
-    //row 1, col 3
-    int num3 = 5;
-    b2Vec2 verts3[] = {
-        b2Vec2(168.7f / PTM_RATIO, -334.0f / PTM_RATIO),
-        b2Vec2(-37.3f / PTM_RATIO, -287.0f / PTM_RATIO),
-        b2Vec2(-168.3f / PTM_RATIO, -339.0f / PTM_RATIO),
-        b2Vec2(-166.3f / PTM_RATIO, -380.0f / PTM_RATIO),
-        b2Vec2(166.7f / PTM_RATIO, -380.0f / PTM_RATIO)
-    };
-    oceanBedPoly3 = new b2PolygonShape();
-    oceanBedPoly3->Set(verts3, num3);
+
+    oceanBedPoly = new b2PolygonShape();
+    oceanBedPoly->Set(verts, num);
 }
 
 - (void)initBugafish
@@ -840,7 +819,7 @@ static b2PolygonShape *oceanBedPoly1, *oceanBedPoly2, *oceanBedPoly3;
     b2PolygonShape *poly2 = NULL;
     
     poly1 = [self getPolyForTag:s1.tag];
-    poly2 = [self getPolyForTag:oceanBed2Tag];
+    poly2 = [self getPolyForTag:oceanBedTag];
     
     b2Manifold manifold;
     b2CollidePolygons(&manifold, poly1, transform1, poly2, transform2);
@@ -853,10 +832,7 @@ static b2PolygonShape *oceanBedPoly1, *oceanBedPoly2, *oceanBedPoly3;
     if (tag == bacTag) poly = bacPoly;
     if (tag == bugaTouchableTag) poly = bugaPoly;
     if (tag == redPillTag || tag == greenPillTag) poly = pillPoly;
-    if (tag == oceanBed1Tag) poly = oceanBedPoly1;
-    if (tag == oceanBed2Tag) poly = oceanBedPoly2;
-    if (tag == oceanBed3Tag) poly = oceanBedPoly3;
-    
+    if (tag == oceanBedTag) poly = oceanBedPoly;
     return poly;
 }
 
@@ -894,9 +870,7 @@ static b2PolygonShape *oceanBedPoly1, *oceanBedPoly2, *oceanBedPoly3;
     delete bugaPoly;
     delete bacPoly;
     delete pillPoly;
-    delete oceanBedPoly1;
-    delete oceanBedPoly2;
-    delete oceanBedPoly3;
+    delete oceanBedPoly;
     
     [[CCSpriteFrameCache sharedSpriteFrameCache] removeUnusedSpriteFrames];
 	self.bacilla = nil;

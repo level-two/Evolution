@@ -15,9 +15,7 @@
 #define bugaUntouchableTag 3
 #define greenPillTag 4
 #define redPillTag 5
-#define oceanBed1Tag 6
-#define oceanBed2Tag 7
-#define oceanBed3Tag 8
+#define oceanBedTag 6
 
 // motion constants
 #define DoubleSpeedDenyTime 1.5
