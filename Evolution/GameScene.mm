@@ -7,8 +7,6 @@
 //
 
 #import "GameScene.h"
-#import "HelloWorldLayer.h"
-#import "StatusLayer.h"
 #import "AnimationLoader.h"
 #import "Box2D/Box2D.h"
 #import "Cocos_Box2D_conversion.h"
@@ -21,8 +19,8 @@ static b2PolygonShape *pillPoly;
 static b2PolygonShape *oceanBedPoly;
 
 @interface GameScene ()
- @property (nonatomic, retain) HelloWorldLayer *helloWorldLayer;
- @property (nonatomic, retain) StatusLayer *statusLayer;
+ @property (nonatomic, retain) CCLayer *gameLayer;
+ @property (nonatomic, retain) CCLayer *statusLayer;
 
  @property (nonatomic, retain) CCSprite *bacilla;
  @property (nonatomic, retain) CCSprite *background;
@@ -84,7 +82,7 @@ static b2PolygonShape *oceanBedPoly;
 
 
 @implementation GameScene
- @synthesize helloWorldLayer;
+ @synthesize gameLayer;
  @synthesize statusLayer;
 
  @synthesize bacilla;
@@ -173,10 +171,10 @@ static b2PolygonShape *oceanBedPoly;
 
 - (void)initLayers
 {
-	self.helloWorldLayer = [HelloWorldLayer node];
-	[self addChild:helloWorldLayer];
+	self.gameLayer = [CCLayer node];
+	[self addChild:gameLayer];
     
-	self.statusLayer = [StatusLayer node];
+	self.statusLayer = [CCLayer node];
 	[self addChild:statusLayer];
 }
 
@@ -184,7 +182,7 @@ static b2PolygonShape *oceanBedPoly;
 {
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bacilla"];
     if (bn)
-        [helloWorldLayer addChild:bn z:1];
+        [gameLayer addChild:bn z:1];
     self.bacilla = [[AnimationLoader sharedInstance] spriteWithName:@"anim"];
     self.bacillaAnimation = [[AnimationLoader sharedInstance] animationWithName:@"anim"];
     self.bacillaMoveAnimation = [CCAnimate actionWithAnimation:bacillaAnimation restoreOriginalFrame:NO];
@@ -229,7 +227,7 @@ static b2PolygonShape *oceanBedPoly;
     
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"Bugafish"];
     if (bn)
-        [helloWorldLayer addChild:bn z:1];
+        [gameLayer addChild:bn z:1];
     self.bugafishAnimation = [[AnimationLoader sharedInstance] animationWithName:@"Bugafish_move"];
     self.bugafishMoveAction = [CCAnimate actionWithAnimation:bugafishAnimation restoreOriginalFrame:NO];
     
@@ -270,7 +268,7 @@ static b2PolygonShape *oceanBedPoly;
     
     CCSpriteBatchNode *bn = [[AnimationLoader sharedInstance] spriteBatchNodeWithName:@"GreenPill"];
     if (bn)
-        [helloWorldLayer addChild:bn z:1];
+        [gameLayer addChild:bn z:1];
     self.greenPillAnimation = [[AnimationLoader sharedInstance] animationWithName:@"GreenPill"];
     self.greenPillAnimAction = [CCAnimate actionWithAnimation:greenPillAnimation restoreOriginalFrame:NO];
     
@@ -295,12 +293,12 @@ static b2PolygonShape *oceanBedPoly;
 
 - (void)addBackground
 {
-    [helloWorldLayer addChild:background z:0];
+    [gameLayer addChild:background z:0];
     CGFloat w = worldSize.width;
     CGFloat h = worldSize.height;
     background.position = ccp(w/2, h/2);
     
-	[helloWorldLayer runAction:[CCFollow actionWithTarget:bacilla worldBoundary:CGRectMake(0,0,w,h)]];
+	[gameLayer runAction:[CCFollow actionWithTarget:bacilla worldBoundary:CGRectMake(0,0,w,h)]];
 }
 
 - (void)addBacilla
@@ -617,8 +615,8 @@ static b2PolygonShape *oceanBedPoly;
         [energyBar startDrain];
     }
     
-    lastTapPoint = CGPointMake(location.x - helloWorldLayer.position.x,
-                               location.y - helloWorldLayer.position.y);
+    lastTapPoint = CGPointMake(location.x - gameLayer.position.x,
+                               location.y - gameLayer.position.y);
     [self bacMoveTo:lastTapPoint];
 }
 
@@ -893,7 +891,7 @@ static b2PolygonShape *oceanBedPoly;
     
     self.energyBar = nil;
     
-    self.helloWorldLayer = nil;
+    self.gameLayer = nil;
     self.statusLayer = nil;
     
 	[super dealloc];

@@ -59,7 +59,6 @@
 		DFA150A9157CCDD000D323E0 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = DFA150A8157CCDD000D323E0 /* TODO */; };
 		DFA750BC150BE57E007206ED /* GameScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFA750BB150BE57E007206ED /* GameScene.mm */; };
 		DFC2B43A156D8166006CFDEC /* EnergyBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DFC2B439156D8165006CFDEC /* EnergyBar.m */; };
-		DFC618071570C24C00B4E800 /* StatusLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFC618061570C24C00B4E800 /* StatusLayer.mm */; };
 		DFE41CA314F996540036ACC7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA214F996540036ACC7 /* QuartzCore.framework */; };
 		DFE41CA514F996540036ACC7 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA414F996540036ACC7 /* OpenGLES.framework */; };
 		DFE41CA714F996540036ACC7 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE41CA614F996540036ACC7 /* OpenAL.framework */; };
@@ -174,7 +173,6 @@
 		DFE41E0314F9965B0036ACC7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE41E0214F9965B0036ACC7 /* main.m */; };
 		DFE41E0614F9965B0036ACC7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE41E0514F9965B0036ACC7 /* AppDelegate.m */; };
 		DFE41E0914F9965B0036ACC7 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE41E0814F9965B0036ACC7 /* RootViewController.m */; };
-		DFE41E0C14F9965B0036ACC7 /* HelloWorldLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFE41E0B14F9965B0036ACC7 /* HelloWorldLayer.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -281,8 +279,6 @@
 		DFB10AFA1568571A00120C69 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		DFC2B438156D8165006CFDEC /* EnergyBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnergyBar.h; sourceTree = "<group>"; };
 		DFC2B439156D8165006CFDEC /* EnergyBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnergyBar.m; sourceTree = "<group>"; };
-		DFC618051570C24C00B4E800 /* StatusLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusLayer.h; sourceTree = "<group>"; };
-		DFC618061570C24C00B4E800 /* StatusLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StatusLayer.mm; sourceTree = "<group>"; };
 		DFE41C9E14F996540036ACC7 /* Evolution.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Evolution.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFE41CA214F996540036ACC7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DFE41CA414F996540036ACC7 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -515,8 +511,6 @@
 		DFE41E0514F9965B0036ACC7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		DFE41E0714F9965B0036ACC7 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		DFE41E0814F9965B0036ACC7 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
-		DFE41E0A14F9965B0036ACC7 /* HelloWorldLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloWorldLayer.h; sourceTree = "<group>"; };
-		DFE41E0B14F9965B0036ACC7 /* HelloWorldLayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HelloWorldLayer.mm; sourceTree = "<group>"; };
 		DFE41E0D14F9965B0036ACC7 /* GameConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConfig.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -740,10 +734,6 @@
 				DFE41E0814F9965B0036ACC7 /* RootViewController.m */,
 				DFA750BA150BE57E007206ED /* GameScene.h */,
 				DFA750BB150BE57E007206ED /* GameScene.mm */,
-				DFE41E0A14F9965B0036ACC7 /* HelloWorldLayer.h */,
-				DFE41E0B14F9965B0036ACC7 /* HelloWorldLayer.mm */,
-				DFC618051570C24C00B4E800 /* StatusLayer.h */,
-				DFC618061570C24C00B4E800 /* StatusLayer.mm */,
 				DFC2B438156D8165006CFDEC /* EnergyBar.h */,
 				DFC2B439156D8165006CFDEC /* EnergyBar.m */,
 				DF97BE7B1530CF1700B0A6E4 /* AnimationLoader.h */,
@@ -1256,7 +1246,6 @@
 				DFE41E0314F9965B0036ACC7 /* main.m in Sources */,
 				DFE41E0614F9965B0036ACC7 /* AppDelegate.m in Sources */,
 				DFE41E0914F9965B0036ACC7 /* RootViewController.m in Sources */,
-				DFE41E0C14F9965B0036ACC7 /* HelloWorldLayer.mm in Sources */,
 				DFA750BC150BE57E007206ED /* GameScene.mm in Sources */,
 				DF97BE7D1530CF1700B0A6E4 /* AnimationLoader.m in Sources */,
 				DF612E991567DF9E00547397 /* b2BroadPhase.cpp in Sources */,
@@ -1305,7 +1294,6 @@
 				DF612EC41567DF9E00547397 /* b2WheelJoint.cpp in Sources */,
 				DF612EC51567DF9E00547397 /* b2Rope.cpp in Sources */,
 				DFC2B43A156D8166006CFDEC /* EnergyBar.m in Sources */,
-				DFC618071570C24C00B4E800 /* StatusLayer.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
