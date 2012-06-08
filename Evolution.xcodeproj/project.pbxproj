@@ -56,9 +56,7 @@
 		DF612EC51567DF9E00547397 /* b2Rope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF612E951567DF9E00547397 /* b2Rope.cpp */; };
 		DF97BE7D1530CF1700B0A6E4 /* AnimationLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = DF97BE7C1530CF1700B0A6E4 /* AnimationLoader.m */; };
 		DF97BE7F1530CFA800B0A6E4 /* Sprites in Resources */ = {isa = PBXBuildFile; fileRef = DF97BE7E1530CFA800B0A6E4 /* Sprites */; };
-		DF9D96B0151BC6E200134160 /* CreatureSpermik.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9D96AF151BC6E100134160 /* CreatureSpermik.m */; };
 		DFA150A9157CCDD000D323E0 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = DFA150A8157CCDD000D323E0 /* TODO */; };
-		DFA750B8150BE213007206ED /* BackgroundLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA750B7150BE213007206ED /* BackgroundLayer.m */; };
 		DFA750BC150BE57E007206ED /* GameScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFA750BB150BE57E007206ED /* GameScene.mm */; };
 		DFC2B43A156D8166006CFDEC /* EnergyBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DFC2B439156D8165006CFDEC /* EnergyBar.m */; };
 		DFC618071570C24C00B4E800 /* StatusLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFC618061570C24C00B4E800 /* StatusLayer.mm */; };
@@ -276,11 +274,7 @@
 		DF97BE7B1530CF1700B0A6E4 /* AnimationLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationLoader.h; sourceTree = "<group>"; };
 		DF97BE7C1530CF1700B0A6E4 /* AnimationLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationLoader.m; sourceTree = "<group>"; };
 		DF97BE7E1530CFA800B0A6E4 /* Sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Sprites; path = Resources/Sprites; sourceTree = "<group>"; };
-		DF9D96AE151BC6E100134160 /* CreatureSpermik.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreatureSpermik.h; sourceTree = "<group>"; };
-		DF9D96AF151BC6E100134160 /* CreatureSpermik.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreatureSpermik.m; sourceTree = "<group>"; };
 		DFA150A8157CCDD000D323E0 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = SOURCE_ROOT; };
-		DFA750B6150BE213007206ED /* BackgroundLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundLayer.h; sourceTree = "<group>"; };
-		DFA750B7150BE213007206ED /* BackgroundLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundLayer.m; sourceTree = "<group>"; };
 		DFA750BA150BE57E007206ED /* GameScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
 		DFA750BB150BE57E007206ED /* GameScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameScene.mm; sourceTree = "<group>"; };
 		DFB10AF8156856CE00120C69 /* Cocos_Box2D_conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cocos_Box2D_conversion.h; sourceTree = "<group>"; };
@@ -754,10 +748,6 @@
 				DFC2B439156D8165006CFDEC /* EnergyBar.m */,
 				DF97BE7B1530CF1700B0A6E4 /* AnimationLoader.h */,
 				DF97BE7C1530CF1700B0A6E4 /* AnimationLoader.m */,
-				DFA750B6150BE213007206ED /* BackgroundLayer.h */,
-				DFA750B7150BE213007206ED /* BackgroundLayer.m */,
-				DF9D96AE151BC6E100134160 /* CreatureSpermik.h */,
-				DF9D96AF151BC6E100134160 /* CreatureSpermik.m */,
 				DFE41E0D14F9965B0036ACC7 /* GameConfig.h */,
 				DFE41CB314F996540036ACC7 /* Resources */,
 				DFE41CC714F996550036ACC7 /* libs */,
@@ -1267,9 +1257,7 @@
 				DFE41E0614F9965B0036ACC7 /* AppDelegate.m in Sources */,
 				DFE41E0914F9965B0036ACC7 /* RootViewController.m in Sources */,
 				DFE41E0C14F9965B0036ACC7 /* HelloWorldLayer.mm in Sources */,
-				DFA750B8150BE213007206ED /* BackgroundLayer.m in Sources */,
 				DFA750BC150BE57E007206ED /* GameScene.mm in Sources */,
-				DF9D96B0151BC6E200134160 /* CreatureSpermik.m in Sources */,
 				DF97BE7D1530CF1700B0A6E4 /* AnimationLoader.m in Sources */,
 				DF612E991567DF9E00547397 /* b2BroadPhase.cpp in Sources */,
 				DF612E9A1567DF9E00547397 /* b2CollideCircle.cpp in Sources */,
