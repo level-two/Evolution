@@ -10,7 +10,6 @@
 
 @interface EnergyBar ()
  @property (nonatomic, assign) BOOL drain;
- -(void)drawFilledRectWith:(CGPoint)v1 and:(CGPoint)v2;
 @end
 
 @implementation EnergyBar
