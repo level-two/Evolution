@@ -34,6 +34,8 @@ static b2PolygonShape *oceanBedPoly;
  @property (nonatomic, retain) CCAnimation *greenPillAnimation;
  @property (nonatomic, retain) CCAnimate *greenPillAnimAction;
 
+ @property (nonatomic, retain) CCLabelBMFont *scoreLabel;
+
  @property (nonatomic, retain) NSMutableArray *bugafishes;
  @property (nonatomic, retain) NSMutableArray *stars;
  @property (nonatomic, retain) NSMutableArray *redPills;
@@ -100,6 +102,8 @@ static b2PolygonShape *oceanBedPoly;
  @synthesize greenPillAnimation;
  @synthesize greenPillAnimAction;
 
+ @synthesize scoreLabel;
+
  @synthesize bacDoublespeeded;
  @synthesize denyDoubleSpeed;
  @synthesize canMakeStrongHit;
@@ -144,6 +148,7 @@ static b2PolygonShape *oceanBedPoly;
     [self initBugafish];
     [self initEnergyBar];
     [self initGreenPill];
+    [self initScore];
     
     self.winSize = [[CCDirector sharedDirector] winSize];
     self.worldSize = background.textureRect.size; // will be changed in future
@@ -156,6 +161,7 @@ static b2PolygonShape *oceanBedPoly;
     [self addGreenPill];
     [self addGreenPill];
     [self addGreenPill];
+    [self addScore];
     
     self.prevTapTime = [NSDate dateWithTimeIntervalSince1970:0];
     
@@ -289,6 +295,11 @@ static b2PolygonShape *oceanBedPoly;
     
 }
 
+- (void)initScore
+{
+    self.scoreLabel = [CCLabelBMFont labelWithString:@"000000" fntFile:@"Font.fnt"];
+}
+
 //--------------------------------------------------------------
 
 - (void)addBackground
@@ -369,6 +380,12 @@ static b2PolygonShape *oceanBedPoly;
 - (void)addBuka
 {
     
+}
+
+- (void)addScore
+{
+    scoreLabel.position = ccp(60, winSize.height-20);
+    [statusLayer addChild:scoreLabel];
 }
 
 //--------------------------------------------------------------
@@ -886,6 +903,8 @@ static b2PolygonShape *oceanBedPoly;
     
     self.greenPillAnimation = nil;
     self.greenPillAnimAction = nil;
+    
+    self.scoreLabel = nil;
     
     self.prevTapTime = nil;
     
